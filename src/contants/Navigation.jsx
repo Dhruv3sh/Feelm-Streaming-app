@@ -26,7 +26,7 @@ export const mobileNavigation = [
 
     {
         label: 'User',
-        href: 'User',
+        href: 'UserLogin',
         icon: <FaUserCircle />
     },
 ]
