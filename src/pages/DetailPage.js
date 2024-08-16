@@ -63,13 +63,13 @@ const DetailPage = () => {
 
         <div className=" absolute w-full h-full top-0 bg-gradient-to-t from-zinc-950/100 to-transparent"></div>
       </div>
-      <div className=" container mx-auto px-4 py-16 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-10">
+      <div className=" container mx-auto px-4 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-10">
         <div className=" relative mx-auto md:mx-0 md:-mt-24  lg:-mt-36 w-fit min-w-60 hidden md:block">
           {data?.poster_path ? (
             <img
               src={imageURL + data?.poster_path}
               alt="banner"
-              className=" h-80 w-52 lg:h-[360px] lg:w-[450px] lg:max-w-[250px] md:h-[280px] md:w-[600px] max object-cover rounded-md"
+              className=" h-80 w-52 lg:h-[360px] lg:w-[450px] lg:max-w-[250px] md:h-[320px] md:w-[500px] object-cover rounded-md"
             />
           ) : (
             <Card className="w-[240px] " radius="sm">
@@ -80,7 +80,7 @@ const DetailPage = () => {
           )}
 
           <button
-            className=" bg-white w-[250px] px-1 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all "
+            className=" bg-white w-[250px] md:w-[240px] lg:w-[250px] px-1 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all "
             onClick={() => {
               Navigate(`/player/${params?.explore}/${data?.id}`);
             }}
@@ -98,7 +98,7 @@ const DetailPage = () => {
           >
             Play now
           </button>
-          <h2 className=" text-2xl md:text-3xl lg:text-4xl font-bold text-white pb-2">
+          <h2 className=" text-2xl md:text-3xl lg:text-4xl font-bold text-white pb-2 pt-2">
             {data?.title || data?.name}
           </h2>
           <p className=" capitalize text-neutral-400 ">{data?.tagline}</p>
