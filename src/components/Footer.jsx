@@ -5,7 +5,7 @@ import { FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
     return (
-        <footer className='flex items-center justify-center gap-1 pb-2 max-sm:text-sm h-[38px]'>
+        <footer className='flex items-center justify-center gap-1 pb-2 max-sm:text-sm h-[38px] pt-4'>
             <hr className=' text-white' />
             <a className='pr-1 hover:scale-110 transition-all' href="https://github.com/Dhruv3sh" target="_blank" rel="noopener noreferrer">
                 <FaGithub size={22} className=' max-sm:size-[17px]' />
