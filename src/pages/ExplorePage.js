@@ -35,7 +35,11 @@ const ExplorePage = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const delayFetch = setTimeout(() => {
+      fetchData();
+    }, pageNo > 1 ? 1000 : 0); 
+  
+    return () => clearTimeout(delayFetch);
   }, [pageNo]);
 
   useEffect(() => {
