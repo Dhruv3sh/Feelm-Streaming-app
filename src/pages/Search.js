@@ -81,15 +81,21 @@ const Search = () => {
           search Result
         </h3>
         <div className="grid grid-cols-5 pl-2 gap-y-4 lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-3 max-sm:grid-cols-2">
-          {data.map((searchData, index) => {
-            return (
+        {data.length > 0 ? (
+            data.map((searchData, index) => (
               <Card
                 data={searchData}
                 key={searchData.id + "search" + index}
                 media_type={searchData.media_type}
               />
-            );
-          })}
+            ))
+          ) : (
+            <div className="col-span-5 text-center pt-8 text-2xl max-sm::text-xs ">
+              Sorry, there is no related movie or show
+            </div>
+          )}
+        </div>
+        <div>
         </div>
       </div>
     </div>
