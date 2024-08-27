@@ -2,12 +2,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Card from "../components/Card";
+import Loader from "../components/Loader";
 
 const ExplorePage = () => {
   const params = useParams();
   const [pageNo, setPageNo] = useState(1);
   const [data, setData] = useState([]);
   const [totalPageNo, setTotalPageNo] = useState(0);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const fetchData = async () => {
     try {
@@ -27,6 +29,8 @@ const ExplorePage = () => {
       setTotalPageNo(response.data.total_pages);
     } catch (error) {
       console.log("error", error);
+    } finally {
+      setLoading(false); // Stop loading after fetch
     }
   };
 
@@ -40,6 +44,10 @@ const ExplorePage = () => {
   };
 
   useEffect(() => {
+    if (pageNo > 1) {
+      setLoading(true); // Start loading only when pageNo > 1
+    }
+    
     const delayFetch = setTimeout(() => {
       fetchData();
     }, pageNo > 1 ? 1000 : 0);
@@ -76,6 +84,8 @@ const ExplorePage = () => {
             />
           ))}
         </div>
+
+        {loading && <Loader/>}
       </div>
     </div>
   );
