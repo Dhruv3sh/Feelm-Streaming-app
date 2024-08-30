@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 
@@ -36,14 +36,21 @@ const Search = () => {
     }
   }, [location?.search]);
 
-  const handleScroll = () => {
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - 100
-    ) {
-      setPage((preve) => preve + 1);
-    }
-  };
+  const handleScroll = useCallback(() => {
+    const debounceTimeout = 500;
+    let timeoutId;
+
+    if (timeoutId) clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 100
+      ) {
+        setPage((preve) => preve + 1);
+      }
+    }, debounceTimeout);
+  }, []);
 
   useEffect(() => {
     if (query) {
@@ -53,7 +60,10 @@ const Search = () => {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <div className=" bg-zinc-950 text-neutral-300 py-16 min-h-[94vh] ">
@@ -71,15 +81,21 @@ const Search = () => {
           search Result
         </h3>
         <div className="grid grid-cols-5 pl-2 gap-y-4 lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-3 max-sm:grid-cols-2">
-          {data.map((searchData, index) => {
-            return (
+        {data.length > 0 ? (
+            data.map((searchData, index) => (
               <Card
                 data={searchData}
                 key={searchData.id + "search" + index}
                 media_type={searchData.media_type}
               />
-            );
-          })}
+            ))
+          ) : (
+            <div className="col-span-5 text-center pt-8 text-2xl max-sm::text-xs ">
+              Sorry, there is no related movie or show
+            </div>
+          )}
+        </div>
+        <div>
         </div>
       </div>
     </div>
