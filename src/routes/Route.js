@@ -4,7 +4,7 @@ import App from "../App";
 import ExplorePage from "../pages/ExplorePage";
 import DetailPage from "../pages/DetailPage";
 import Search from "../pages/Search";
-import User from "../pages/User";
+// import User from "../pages/User";
 import Player from "../pages/Player";
 
 const router = createBrowserRouter([
@@ -28,10 +28,10 @@ const router = createBrowserRouter([
         path: "search",
         element: <Search />,
       },
-      {
-        path: "UserLogin",
-        element: <User />,
-      },
+      // {
+      //   path: "UserLogin",
+      //   element: <User />,
+      // },
       {
         path: "/player/:explore/:playerId",
         element: <Player />,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link, NavLink } from 'react-router-dom';
 import { IoSearchOutline } from 'react-icons/io5';
-import { FaUserCircle } from 'react-icons/fa';
+// import { FaUserCircle } from 'react-icons/fa';
 import { navigation } from '../contants/Navigation';
 
 const Header = () => {
@@ -76,11 +76,11 @@ const Header = () => {
                         <button className='text-neutral-50 absolute right-3' onClick={handleButtonClick}><IoSearchOutline size={20} /></button>
                     </form>
 
-                    <div className='w-full h-full max-lg:hidden mr-2 pt-2 active:scale-50 transition-all hover:scale-105 duration-150'>
+                    {/* <div className='w-full h-full max-lg:hidden mr-2 pt-2 active:scale-50 transition-all hover:scale-105 duration-150'>
                         <Link to={'UserLogin'}>
                             <button><FaUserCircle size={30} /></button>
                         </Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </header>
