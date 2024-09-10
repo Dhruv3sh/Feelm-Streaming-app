@@ -8,6 +8,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setBannerData, setImageURL } from "./store/FeelmSlice";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const dispatch = useDispatch();
@@ -42,6 +44,7 @@ function App() {
     <main className="pb-14 lg:pb-0">
       <Header />
       <div>
+        <ToastContainer/>
         <Outlet />
         {!hideFooter && <Footer/>}
       </div>

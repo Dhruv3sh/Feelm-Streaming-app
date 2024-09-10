@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/Store";
 import { NextUIProvider } from "@nextui-org/react";
 
+
 /*axios Setup*/
 axios.defaults.baseURL = "https://api.themoviedb.org/3";
 axios.defaults.headers.common[
