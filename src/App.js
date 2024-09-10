@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -34,13 +35,16 @@ function App() {
     fetchConfiguration();
   }, []);
 
+  const location = useLocation();
+  const hideFooter = location.pathname === "/UserLogin" || "/UserSignup";
+
   return (
     <main className="pb-14 lg:pb-0">
       <Header />
       <div>
         <Outlet />
+        {!hideFooter && <Footer/>}
       </div>
-      <Footer />
       <MobileNavigation />
     </main>
   );

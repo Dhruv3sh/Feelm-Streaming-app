@@ -4,8 +4,9 @@ import App from "../App";
 import ExplorePage from "../pages/ExplorePage";
 import DetailPage from "../pages/DetailPage";
 import Search from "../pages/Search";
-// import User from "../pages/User";
 import Player from "../pages/Player";
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 
 const router = createBrowserRouter([
   {
@@ -28,10 +29,14 @@ const router = createBrowserRouter([
         path: "search",
         element: <Search />,
       },
-      // {
-      //   path: "UserLogin",
-      //   element: <User />,
-      // },
+      {
+        path: "UserLogin",
+        element: <Login />,
+      },
+      {
+        path: "UserSignup",
+        element: <Signup/>
+      },
       {
         path: "/player/:explore/:playerId",
         element: <Player />,
