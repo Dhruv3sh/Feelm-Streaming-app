@@ -1,10 +1,11 @@
 import { Button, Input } from "@nextui-org/react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { auth } from "../components/Firebase";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,23 +23,35 @@ const Login = () => {
   }, [email]);
 
   const validatePassword = (password) =>
-    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/)
+    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,16}$/)
   const isPasswordInvalid = useMemo(() =>{
     if (password === "") return false;
 
     return validatePassword(password) ? false : true
   }, [password])
 
-  const handleRegister = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-      const user = auth.currentUser;
-      console.log(user);
-      
+      await signInWithEmailAndPassword(auth, email, password)
+      toast.success("Loged in Successfully!!",{
+        position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+        hideProgressBar: "true"
+      })
+      localStorage.setItem('redirectedFromLogin', 'true'); // Set flag for redirection
+      window.location.href = "/Profile";
+      setEmail("");
+      setPassword("");
+
     } catch (error) {
-      console.log(error.message);
-      
+      toast.error(error.message.split("auth/")[1].split(")")[0].replace(/-/g, " "),{
+        position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+        hideProgressBar: "true"
+      })
     }
   }
 
@@ -47,7 +60,7 @@ const Login = () => {
       <div className=" h-[480px] w-[400px] max-sm:h-[490px] max-sm:w-[330px] bg-black opacity-85 shadow-[0px_0px_21px_13px_#4a5568]">
         <div className="h-full w-full flex flex-col justify-center items-center relative ">
           <div className=" text-2xl italic pb-4">Login</div>
-          <form className=" w-3/4" onSubmit={handleRegister}>
+          <form className=" w-3/4" onSubmit={handleLogin}>
             <div className="flex w-full flex-wrap md:flex-nowrap gap-2">
               <Input
                 value={email}
@@ -73,7 +86,7 @@ const Login = () => {
                 required
                 variant="bordered"
                 isInvalid={isPasswordInvalid}
-                errorMessage="minimum 8 letter with one smallercase one uppercase and one digit"
+                errorMessage="minimum 6 letter with one smallercase one uppercase and one digit"
                 onValueChange={setPassword}
                 endContent={
                   <button

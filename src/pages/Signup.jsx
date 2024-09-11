@@ -25,7 +25,7 @@ const Signup = () => {
   }, [email]);
 
   const validatePassword = (password) =>
-    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/);
+    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,16}$/);
   const isPasswordInvalid = useMemo(() => {
     if (password === "") return false;
 
@@ -45,18 +45,26 @@ const Signup = () => {
           Name: name,
         })
       }
-      console.log("User Regitered");
       toast.success("User Registered Successfully!!",{
         position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+        hideProgressBar: "true"
       })
-      
+      setName("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
       console.log(error.message);
       toast.error(error.message,{
         position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+        hideProgressBar: "true"
       })
     }
   };
+
 
   return (
     <div className=" h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center">
@@ -95,7 +103,7 @@ const Signup = () => {
                 required
                 variant="bordered"
                 isInvalid={isPasswordInvalid}
-                errorMessage="minimum 8 letter with one smallercase one uppercase and one digit"
+                errorMessage="minimum 6 letter with one smallercase one uppercase and one digit"
                 onValueChange={setPassword}
                 endContent={
                   <button

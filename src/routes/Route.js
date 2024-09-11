@@ -7,6 +7,7 @@ import Search from "../pages/Search";
 import Player from "../pages/Player";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "UserSignup",
         element: <Signup/>
+      },
+      {
+        path: "Profile",
+        element: <ProfilePage/>
       },
       {
         path: "/player/:explore/:playerId",
