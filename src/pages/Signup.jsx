@@ -51,6 +51,8 @@ const Signup = () => {
         theme: "dark",
         hideProgressBar: "true"
       })
+      localStorage.setItem('redirectedFromSignup', 'true'); // Set flag for redirection
+      window.location.href = "/UserLogin";
       setName("");
       setEmail("");
       setPassword("");
@@ -68,18 +70,18 @@ const Signup = () => {
 
   return (
     <div className=" h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center">
-      <div className=" h-[480px] w-[400px] max-sm:h-[490px] max-sm:w-[330px] bg-black opacity-85 shadow-[0px_0px_21px_13px_#4a5568]">
+      <div className=" h-[480px] w-[400px] max-sm:h-[400px] max-sm:w-[300px] bg-black opacity-85 shadow-[0px_0px_21px_13px_#4a5568]">
         <div className="h-full w-full flex flex-col justify-center items-center relative ">
           <div className=" text-2xl italic pb-4">Sign up</div>
           <form className=" w-3/4" onSubmit={handleRegister}>
 
-            <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+            <div className="flex w-full flex-wrap md:flex-nowrap max-sm:pb-2">
               <Input type="text" value={name} onValueChange={setName} label="Name" variant="bordered" isRequired required />
             </div>
 
-            <br/>
+            <br className=" max-sm:hidden"/>
 
-            <div className="flex w-full flex-wrap md:flex-nowrap gap-2">
+            <div className="flex w-full flex-wrap md:flex-nowrap">
               <Input
                 value={email}
                 type="email"
@@ -93,9 +95,7 @@ const Signup = () => {
               />
             </div>
 
-            <br />
-
-            <div className="flex w-full flex-wrap md:flex-nowrap gap-4 ">
+            <div className="flex w-full flex-wrap md:flex-nowrap pt-[10px] max-sm:pt-0">
               <Input
                 value={password}
                 label="Password"
@@ -120,15 +120,16 @@ const Signup = () => {
               />
             </div>
 
-            <br />
-            <div className="flex flex-wrap gap-4 items-center justify-center">
-              <Button type="submit" color="primary" variant="ghost">
+            <br className=" max-sm:hidden"/>
+
+            <div className="flex flex-wrap items-center justify-center ">
+              <Button type="submit" color="primary" variant="ghost"  >
                 Signup
               </Button>
             </div>
             <div className=" w-full flex justify-center flex-col items-center">
-              <p className="pt-2">Or</p>
-              <p>
+              <p className="pt-2">-------- Or --------</p>
+              <p className=" max-sm:text-sm">
                 Already have an account?
                 <Link to="/UserLogin">
                   <b className=" text-yellow-600"> Login</b>

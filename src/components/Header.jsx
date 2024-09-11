@@ -99,7 +99,7 @@ const Header = () => {
                             onChange={handleInputValue}
                         ></input>
                         <button
-                            className="text-neutral-50 absolute right-3"
+                            className="text-neutral-50 absolute right-3 max-lg:right-0"
                             onClick={handleButtonClick}
                         >
                             <IoSearchOutline size={20} />
@@ -107,7 +107,7 @@ const Header = () => {
                     </form>
 
                     {user ? (
-                        <div className="w-full h-full max-lg:hidden mr-2 pt-2 active:scale-50 transition-all hover:scale-105 duration-150">
+                        <div className="w-full h-full mr-2 pt-2 active:scale-50 transition-all hover:scale-105 duration-150">
                             <Link to="/Profile">
                                 <button>
                                     <FaUserCircle size={30} />
@@ -115,10 +115,10 @@ const Header = () => {
                             </Link>
                         </div>
                     ) : (
-                        <div className="w-full h-full max-lg:hidden mr-2 active:scale-50 transition-all hover:scale-105 duration-150">
-                            <Link to="/UserLogin">
+                        <div className="w-full h-full mr-1 active:scale-50 transition-all hover:scale-105 duration-150">
+                            <Link to="/UserSignup">
                                 <Button radius="full" size="sm" className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg">
-                                    Login
+                                    Sign in
                                 </Button>
                             </Link>
                         </div>

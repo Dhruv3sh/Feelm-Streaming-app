@@ -1,6 +1,6 @@
 import { Button, Input } from "@nextui-org/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -13,6 +13,24 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  useEffect(() => {
+    const redirectedFromSignup =
+      localStorage.getItem("redirectedFromSignup") === "true";
+
+    if (redirectedFromSignup) {
+      // Show toast message
+      toast.success(`Registered Successfully! now enter your credentials to login`, {
+        position: "top-center",
+        autoClose: 4000,
+        theme: "dark",
+        hideProgressBar: true,
+      });
+
+      // Clear the flag
+      localStorage.removeItem("redirectedFromSignup");
+    }
+  }, []);
 
   const validateEmail = (email) =>
     email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -34,12 +52,12 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      toast.success("Loged in Successfully!!",{
-        position: "top-center",
-        autoClose: 1200,
-        theme: "dark",
-        hideProgressBar: "true"
-      })
+      // toast.success("Loged in Successfully!!",{
+      //   position: "top-center",
+      //   autoClose: 1200,
+      //   theme: "dark",
+      //   hideProgressBar: "true"
+      // })
       localStorage.setItem('redirectedFromLogin', 'true'); // Set flag for redirection
       window.location.href = "/Profile";
       setEmail("");
@@ -57,11 +75,11 @@ const Login = () => {
 
   return (
     <div className=" h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center">
-      <div className=" h-[480px] w-[400px] max-sm:h-[490px] max-sm:w-[330px] bg-black opacity-85 shadow-[0px_0px_21px_13px_#4a5568]">
+      <div className=" h-[480px] w-[400px] max-sm:h-[400px] max-sm:w-[300px] bg-black opacity-85 shadow-[0px_0px_21px_13px_#4a5568]">
         <div className="h-full w-full flex flex-col justify-center items-center relative ">
           <div className=" text-2xl italic pb-4">Login</div>
           <form className=" w-3/4" onSubmit={handleLogin}>
-            <div className="flex w-full flex-wrap md:flex-nowrap gap-2">
+            <div className="flex w-full flex-wrap md:flex-nowrap">
               <Input
                 value={email}
                 type="email"
@@ -76,9 +94,9 @@ const Login = () => {
               />
             </div>
 
-            <br />
+            <br className=" max-sm:hidden" />
 
-            <div className="flex w-full flex-wrap md:flex-nowrap gap-4 ">
+            <div className="flex w-full flex-wrap md:flex-nowrap ">
               <Input
                 value={password}
                 label="Password"
@@ -112,7 +130,7 @@ const Login = () => {
             </div>
 
             <div className=" w-full flex justify-center flex-col items-center">
-              <p className="pt-2">Or</p>
+              <p className="pt-2">-------- Or --------</p>
               <p>
                 Don't have an account?
                 <Link to="/UserSignup">

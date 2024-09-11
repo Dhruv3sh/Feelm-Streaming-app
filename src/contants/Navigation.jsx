@@ -1,7 +1,6 @@
 import { IoMdHome } from "react-icons/io";
 import { PiTelevisionFill } from "react-icons/pi";
 import { BiSolidMoviePlay } from "react-icons/bi";
-import { FaUserCircle } from "react-icons/fa";
 
 export const navigation = [
     {
@@ -24,9 +23,4 @@ export const mobileNavigation = [
     },
     ...navigation,
 
-    {
-        label: 'Login',
-        href: 'UserLogin',
-        icon: <FaUserCircle />
-    },
 ]

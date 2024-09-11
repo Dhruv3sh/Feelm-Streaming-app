@@ -47,9 +47,9 @@ const ProfilePage = () => {
         // Update Firestore with new profile image URL
         const userDocRef = doc(db, "users", user.uid);
         await updateDoc(userDocRef, { profileImageUrl: downloadURL });
-        toast.success("Profile image updated!", { autoClose: 1200, hideProgressBar: true });
+        toast.success("Profile image updated!", { autoClose: 1200, hideProgressBar: true, theme: "dark", });
       } catch (error) {
-        toast.error("error updating image, try different image", { autoClose: 1200, hideProgressBar: true });
+        toast.error("error updating image, try different image", { autoClose: 1200, hideProgressBar: true,theme: "dark", });
       }
     }
   };
@@ -102,15 +102,15 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center gap-x-1 pt-8">
-      <div className=" h-[540px] w-80 max-sm:h-[490px] max-sm:w-[330px] bg-black opacity-85">
+    <div className="h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
+      <div className=" h-[540px] w-80 max-sm:h-[450px] max-sm:w-[330px] bg-black opacity-85">
         <div className=" h-full flex justify-center flex-col">
-          <div className="w-full flex justify-center relative pt-4 ">
+          <div className="w-full flex justify-center relative pt-6 ">
             {/* Display user image or default icon */}
             <img
               src={imageUrl ||"/images/default.png" }
               alt="Profile"
-              className="w-24 h-24 rounded-full"
+              className="w-24 h-24 max-sm:w-20 max-sm:h-20 rounded-full"
             />
             {/* Hidden file input */}
             <input
@@ -124,14 +124,14 @@ const ProfilePage = () => {
               onClick={() => document.getElementById("fileInput").click()}
               className="btn btn-primary absolute bottom-0 right-24" 
             >
-              <TiEdit size={25}/>
+              <TiEdit size={23}/>
             </button>
           </div>
           <div className="w-full h-full flex flex-col items-center pt-2">
           {userDetails ? (
             <>
-              <h1>Welcome <b>{userDetails.Name}</b></h1>
-              <h1>Email: {userDetails.email}</h1>
+              <h1><b><i>{userDetails.Name}</i></b></h1>
+              <h1><b>{userDetails.email}</b></h1>
             </>
           ) : (
             <p>No user details available.</p>
@@ -140,9 +140,8 @@ const ProfilePage = () => {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="logout-button bg-gradient-to-b from-red-500 to-red-900 rounded-lg p-1 w-3/4"
-            aria-label="Logout"
-          >
+            className="logout-button bg-gradient-to-b from-red-500 to-red-900 rounded-lg p-1 w-52 max-sm:w-[210px]  mt-2"
+            aria-label="Logout">
             Logout
           </button>
           </div>
@@ -151,6 +150,7 @@ const ProfilePage = () => {
       <div className=" h-[540px] w-[710px] max-sm:h-[490px] max-sm:w-[330px] bg-black opacity-85">
         <div className=" flex gap-2 justify-center w-full h-full">
           <p>Reviews </p>
+          <p>Add to list</p>
           <p>Continue watching</p>
         </div>
       </div>
