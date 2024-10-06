@@ -47,9 +47,9 @@ const ProfilePage = () => {
         // Update Firestore with new profile image URL
         const userDocRef = doc(db, "users", user.uid);
         await updateDoc(userDocRef, { profileImageUrl: downloadURL });
-        toast.success("Profile image updated!", { autoClose: 1200, hideProgressBar: true, theme: "dark", });
+        toast.success("Profile image updated!", {position: "top-center", autoClose: 1200, hideProgressBar: true, theme: "dark", });
       } catch (error) {
-        toast.error("error updating image, try different image", { autoClose: 1200, hideProgressBar: true,theme: "dark", });
+        toast.error("error updating image, try different image", {position: "top-center", autoClose: 1200, hideProgressBar: true,theme: "dark", });
       }
     }
   };

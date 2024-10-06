@@ -38,7 +38,9 @@ function App() {
   }, []);
 
   const location = useLocation();
-  const hideFooter = location.pathname === "/UserLogin" || "/UserSignup";
+  const hideFooter = location.pathname === "/UserLogin" || location.pathname === "/UserSignup" || location.pathname === "/Profile";
+  console.log(hideFooter);
+  
 
   return (
     <main className="pb-14 lg:pb-0">
