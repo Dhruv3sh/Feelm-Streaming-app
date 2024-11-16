@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setBannerData, setImageURL } from "./store/FeelmSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,11 +40,11 @@ function App() {
 
   const location = useLocation();
   const hideFooter = location.pathname === "/UserLogin" || location.pathname === "/UserSignup" || location.pathname === "/Profile";
-  console.log(hideFooter);
   
 
   return (
     <main className="pb-14 lg:pb-0">
+      <AuthProvider>
       <Header />
       <div>
         <ToastContainer/>
@@ -51,6 +52,7 @@ function App() {
         {!hideFooter && <Footer/>}
       </div>
       <MobileNavigation />
+      </AuthProvider>
     </main>
   );
 }

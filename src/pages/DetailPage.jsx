@@ -7,6 +7,9 @@ import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
 import Loading from "../components/Loading";
 import { Card, Skeleton } from "@nextui-org/react";
+import { auth, db } from "../components/Firebase";
+import { doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const DetailPage = () => {
   const Navigate = useNavigate();
@@ -24,6 +27,8 @@ const DetailPage = () => {
   );
   const [isLoaded, setIsLoaded] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+  const [inWishlist, setInWishlist] = useState(false);
+  const [inFavorites, setInFavorites] = useState(false);
 
   const handleImageLoad = () => {
     setIsLoaded(true);
@@ -36,11 +41,66 @@ const DetailPage = () => {
   const duration = (data?.runtime / 60).toFixed(1).split(".");
 
   useEffect(() => {
+    const fetchUserLists = async () => {
+      if (auth.currentUser) {
+        const userRef = doc(db, "users", auth.currentUser.uid);
+        const userDoc = await getDoc(userRef);
+        const userData = userDoc.data();
+        
+        if (userData) {
+          setInWishlist(userData.wishlist?.some(item => item.id === data.id));
+          setInFavorites(userData.favorites?.some(item => item.id === data.id));
+        }
+      }
+    };
+
+    fetchUserLists();
+  }, [data?.id]);
+
+  const handleAddOrRemove = async (listType, isInList, setInList) => {
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      const item = {
+        id: data.id,
+        title: data.title || data.name,
+        poster_path: `${imageURL}${data.poster_path}`,
+        media_type: params.explore, 
+        release_date: data.release_date || data.first_air_date, 
+        vote_average: data.vote_average, 
+      };
+
+      try {
+        await updateDoc(userRef, {
+          [listType]: isInList ? arrayRemove(item) : arrayUnion(item),
+        });
+        setInList(!isInList);
+        toast.success(`${isInList ? "Removed from" : "Added to"} ${listType === "wishlist" ? "Wishlist" : "Favorites"}!`, {
+          position: "top-center",
+          theme: "dark",
+          autoClose: 1200,
+          hideProgressBar: true
+        });
+      } catch (error) {
+        toast.error(`Failed to ${isInList ? "remove from" : "add to"} ${listType}.`,{
+          position: "top-center",
+          autoClose: 1200,
+          theme: "dark",
+          hideProgressBar: true
+        });
+        console.error(`Error updating ${listType}:`, error);
+      }
+    } else {
+      toast.warning("Please log in to modify your list.");
+    }
+  };
+
+  useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  }, [params]);
+  }, [params.id]);
+
 
   return (
     <div>
@@ -87,6 +147,20 @@ const DetailPage = () => {
           >
             Play now
           </button>
+          <div className="flex flex-col items-center space-y-2 mt-4">
+            <button
+              onClick={() => handleAddOrRemove("wishlist", inWishlist, setInWishlist)}
+              className={`px-4 py-2 ${inWishlist ? "bg-yellow-600" : "bg-yellow-500"} text-white rounded hover:bg-yellow-600`}
+            >
+              {inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+            </button>
+            <button
+              onClick={() => handleAddOrRemove("favorites", inFavorites, setInFavorites)}
+              className={`px-4 py-2 ${inFavorites ? "bg-red-600" : "bg-red-500"} text-white rounded hover:bg-red-600`}
+            >
+              {inFavorites ? "Remove from Favorites" : "Add to Favorites"}
+            </button>
+          </div>
         </div>
 
         <div>

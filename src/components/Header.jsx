@@ -3,8 +3,8 @@ import { useNavigate, useLocation, Link, NavLink } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { navigation } from "../contants/Navigation";
-import useAuth from "../hooks/useAuth";
 import { Button } from "@nextui-org/react";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
     const location = useLocation();
@@ -12,7 +12,8 @@ const Header = () => {
     const [inputValue, setInputValue] = useState(removeSpace);
     const [navbar, setNavbar] = useState(false);
     const navigate = useNavigate();
-    const user = useAuth();
+    const {user} = useAuth();
+    
 
     const handleButtonClick = () => {
         navigate("/search");
@@ -110,7 +111,7 @@ const Header = () => {
                     </form>
 
                     {user ? (
-                        <div className="w-full h-full mr-2 pt-2 active:scale-50 transition-all hover:scale-105 duration-150">
+                        <div className="w-full h-full mr-2 pt-2 active:scale-90 transition-all hover:scale-105 duration-150">
                             <Link to="/Profile">
                                 <button>
                                     <FaUserCircle size={30} />
@@ -118,8 +119,8 @@ const Header = () => {
                             </Link>
                         </div>
                     ) : (
-                        <div className="w-full h-full mr-1 active:scale-50 transition-all hover:scale-105 duration-150">
-                            <Link to="/UserSignup">
+                        <div className="w-full h-full mr-1 active:scale-90 transition-all hover:scale-105 duration-150">
+                            <Link to="/UserLogin">
                                 <Button radius="full" size="sm" className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg">
                                     Sign in
                                 </Button>

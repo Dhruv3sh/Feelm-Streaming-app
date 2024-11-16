@@ -39,7 +39,7 @@ const Banner = () => {
 
     return (imageURL ?
         <section className='w-full h-full'>
-            <div className='flex min-h-full max-h-[95vh] overflow-hidden'>
+            <div className='flex min-h-full max-h-[98vh] overflow-hidden'>
                 {
                     bannerData.map((data, index) => {
                         return (

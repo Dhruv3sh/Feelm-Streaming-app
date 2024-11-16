@@ -1,8 +1,10 @@
- import { createSlice } from "@reduxjs/toolkit";
+import {createSlice } from "@reduxjs/toolkit";
 
  const initialState ={
     bannerData : [],
-    imageURL : ''
+    imageURL : '',
+    userDetails: null,
+    
  }
 
  export const FeelmSlice = createSlice({
@@ -14,11 +16,14 @@
         },
         setImageURL : (state,action) =>{
             state.imageURL = action.payload
-        }
+        },
+        setUserDetails: (state, action) => {
+            state.userDetails = action.payload; // Set user details
+        },
     }
  })
  
 
- export const {setBannerData, setImageURL} = FeelmSlice.actions
+ export const {setBannerData, setImageURL, setUserDetails } = FeelmSlice.actions
 
  export default FeelmSlice.reducer

@@ -3,16 +3,20 @@ import { Button, Input } from "@nextui-org/react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, setLoading, setError } from "../store/authSlice";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../components/Firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { toast } from "react-toastify";
 
 const Signup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const { isLoading} = useSelector((state) => state.auth);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -34,36 +38,50 @@ const Signup = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
-      console.log(user);
+    dispatch(setLoading(true));
 
-      if (user){
-        await setDoc(doc(db, "users", user.uid),{
-          email: user.email,
-          Name: name,
-        })
-      }
-      toast.success("User Registered Successfully!!",{
+    try {
+      // Create user with Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      // Save user details to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        Name: name,
+      });
+
+      // Update Redux store with user info
+      dispatch(setUser({ uid: user.uid, email: user.email, name }));
+      toast.success("User Registered Successfully!!", {
         position: "top-center",
         autoClose: 1200,
         theme: "dark",
-        hideProgressBar: "true"
-      })
-      localStorage.setItem('redirectedFromSignup', 'true'); // Set flag for redirection
-      window.location.href = "/UserLogin";
+        hideProgressBar: true
+      });
+
+      // Redirect to profile page
+      localStorage.setItem("redirectedFromSignup", "true");
+      window.location.href = "/";
+
+      // Clear form fields
       setName("");
       setEmail("");
       setPassword("");
     } catch (error) {
-      console.log(error.message);
-      toast.error(error.message,{
+      // Handle error
+      dispatch(setError(error.message));
+      toast.error(error.message.split("auth/")[1].split(")")[0].replace(/-/g, " "), {
         position: "top-center",
         autoClose: 1200,
         theme: "dark",
-        hideProgressBar: "true"
-      })
+      });
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -123,8 +141,8 @@ const Signup = () => {
             <br className=" max-sm:hidden"/>
 
             <div className="flex flex-wrap items-center justify-center ">
-              <Button type="submit" color="primary" variant="ghost"  >
-                Signup
+              <Button type="submit" color="primary" variant="ghost" disabled={isLoading} >
+              {isLoading ? "Registering..." : "Signup"}
               </Button>
             </div>
             <div className=" w-full flex justify-center flex-col items-center">

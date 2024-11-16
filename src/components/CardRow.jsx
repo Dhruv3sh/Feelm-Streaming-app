@@ -12,6 +12,7 @@ const CardRow = ({ data = [], heading, trending, media_type }) => {
     const handlePrevious = () => {
         containerRef.current.scrollLeft -= 1100
     }
+   
     return (
         <div className=" container mx-auto px-3 my-10 ">
             <h2 className=" text-white text-2xl max-md:text-xl font-bold mb-3">{heading}</h2>

@@ -1,36 +1,23 @@
 import { Button, Input } from "@nextui-org/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { auth } from "../components/Firebase";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../store/authSlice";
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.auth);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-
-  useEffect(() => {
-    const redirectedFromSignup =
-      localStorage.getItem("redirectedFromSignup") === "true";
-
-    if (redirectedFromSignup) {
-      // Show toast message
-      toast.success(`Registered Successfully! now enter your credentials to login`, {
-        position: "top-center",
-        autoClose: 4000,
-        theme: "dark",
-        hideProgressBar: true,
-      });
-
-      // Clear the flag
-      localStorage.removeItem("redirectedFromSignup");
-    }
-  }, []);
+  
 
   const validateEmail = (email) =>
     email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -50,28 +37,31 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    dispatch(setLoading(true)); // Start loading
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      // toast.success("Loged in Successfully!!",{
-      //   position: "top-center",
-      //   autoClose: 1200,
-      //   theme: "dark",
-      //   hideProgressBar: "true"
-      // })
-      localStorage.setItem('redirectedFromLogin', 'true'); // Set flag for redirection
-      window.location.href = "/Profile";
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("redirectedFromLogin", "true"); // Set flag for redirection
+      window.location.href = "/";
       setEmail("");
       setPassword("");
-
     } catch (error) {
-      toast.error(error.message.split("auth/")[1].split(")")[0].replace(/-/g, " "),{
-        position: "top-center",
-        autoClose: 1200,
-        theme: "dark",
-        hideProgressBar: "true"
-      })
+      console.error(error);
+      toast.error(
+        error.message
+          .split("auth/")[1]
+          .split(")")[0]
+          .replace(/-/g, " "),
+        {
+          position: "top-center",
+          autoClose: 1200,
+          theme: "dark",
+          hideProgressBar: true,
+        }
+      );
+    } finally {
+      dispatch(setLoading(false)); // Stop loading
     }
-  }
+  };
 
   return (
     <div className=" h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center">
@@ -124,8 +114,8 @@ const Login = () => {
             <br />
 
             <div className="flex flex-wrap gap-4 items-center justify-center">
-              <Button type="submit" color="primary" variant="ghost">
-                Login
+              <Button type="submit" color="primary" variant="ghost" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
               </Button>
             </div>
 
