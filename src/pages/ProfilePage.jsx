@@ -1,48 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import React, { useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth, db, storage } from "../components/Firebase";
+import { auth, storage, db } from "../components/Firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiEdit } from "react-icons/ti";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser} from '../store/authSlice';
-import { setProfileData, setProfileError, setProfileLoading } from "../store/profileSlice";
+import { useDispatch } from "react-redux";
+import { setUser, setProfileData } from "../store/authSlice";
+import { useAuth } from "../context/AuthContext"; // Import the context hook
+import { doc, updateDoc } from "firebase/firestore";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // State from Redux
-  const user = useSelector((state) => state.auth?.user);
-  const profileData = useSelector((state) => state.profile?.profileData);
-  // const profileLoading = useSelector((state) => state.profile?.profileLoading);
+  // Get data from AuthContext
+  const { user, profileData } = useAuth(); // Access global state
 
-  const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null); // URL for profile image
-
-  // Fetch user data from Firestore and update Redux
-  const fetchProfileData = async () => {
-    if (user) {
-      try {
-        dispatch(setProfileLoading(true));
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          dispatch(setProfileData(userData));
-          setImageUrl(userData.profileImageUrl || "/images/default.png");
-        } else {
-          dispatch(setProfileError("No user data found"));
-        }
-      } catch (error) {
-        dispatch(setProfileError("Error fetching profile data: " + error.message));
-      } finally {
-        dispatch(setProfileLoading(false));
-      }
-    }
-  };
+  const [file, setFile] = useState(null); // Temporary state for file upload
 
   // Upload new image to Firebase Storage
   const handleFileUpload = async (selectedFile) => {
@@ -52,11 +27,12 @@ const ProfilePage = () => {
         await uploadBytes(fileRef, selectedFile);
 
         const downloadURL = await getDownloadURL(fileRef);
-        setImageUrl(downloadURL);
 
         // Update Firestore with new profile image URL
         const userDocRef = doc(db, "users", user.uid);
         await updateDoc(userDocRef, { profileImageUrl: downloadURL });
+
+        dispatch(setProfileData({ ...profileData, profileImageUrl: downloadURL }));
 
         toast.success("Profile image updated!", {
           position: "top-center",
@@ -83,33 +59,27 @@ const ProfilePage = () => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      fetchProfileData();
-    }
-  }, [user]);
-
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
       await signOut(auth);
-      dispatch(setUser(null));
-      localStorage.setItem("redirectedFromProfile","true");
+      dispatch(setUser(null)); // Clear user data from Redux
+      localStorage.setItem("redirectedFromProfile", "true");
       navigate("/");
     } catch (error) {
       console.error("Logout Error:", error.message);
     }
-    
   };
 
   if (!user) {
     return (
       <div className="text-4xl flex justify-center items-center bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center h-screen pt-12">
-        log in to view your profile..
+        Log in to view your profile...
       </div>
     );
   }
 
+  const profileImage = profileData?.profileImageUrl || "/images/default.png";
 
   return (
     <div className="h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
@@ -117,7 +87,7 @@ const ProfilePage = () => {
         <div className="h-full flex justify-center flex-col">
           <div className="w-full flex justify-center relative pt-6">
             <img
-              src={imageUrl || "/images/default.png"}
+              src={profileImage}
               alt="Profile"
               className="w-24 h-24 max-sm:w-20 max-sm:h-20 rounded-full"
             />
@@ -139,11 +109,11 @@ const ProfilePage = () => {
               <>
                 <h1>
                   <b>
-                    <i>{profileData?.Name}</i>
+                    <i>{profileData?.Name || "N/A"}</i>
                   </b>
                 </h1>
                 <h1>
-                  <b>{profileData?.email}</b>
+                  <b>{profileData?.email || "N/A"}</b>
                 </h1>
               </>
             ) : (
