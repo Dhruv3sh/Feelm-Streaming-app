@@ -8,6 +8,7 @@ import Player from "../pages/Player";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import ProfilePage from "../pages/ProfilePage";
+import MyList from "../pages/MyList";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "search",
         element: <Search />,
+      },
+      {
+        path: "MyList",
+        element: <MyList/>,
       },
       {
         path: "UserLogin",

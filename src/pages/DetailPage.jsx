@@ -8,8 +8,18 @@ import CardRow from "../components/CardRow";
 import Loading from "../components/Loading";
 import { Card, Skeleton } from "@nextui-org/react";
 import { auth, db } from "../components/Firebase";
-import { doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+  arrayRemove,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
+import { MdPlaylistAdd } from "react-icons/md";
+import { MdPlaylistAddCheck } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa6";
 
 const DetailPage = () => {
   const Navigate = useNavigate();
@@ -28,7 +38,7 @@ const DetailPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
-  const [inFavorites, setInFavorites] = useState(false);
+  const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
 
   const handleImageLoad = () => {
     setIsLoaded(true);
@@ -46,10 +56,10 @@ const DetailPage = () => {
         const userRef = doc(db, "users", auth.currentUser.uid);
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
-        
+
         if (userData) {
-          setInWishlist(userData.wishlist?.some(item => item.id === data.id));
-          setInFavorites(userData.favorites?.some(item => item.id === data.id));
+          setInWishlist(userData.wishlist?.some((item) => item.id === data.id));
+          setInCurrentWatchList(userData.CurrentlyWatching?.some((item) => item.id === data.id))
         }
       }
     };
@@ -57,40 +67,89 @@ const DetailPage = () => {
     fetchUserLists();
   }, [data?.id]);
 
-  const handleAddOrRemove = async (listType, isInList, setInList) => {
+  const handleAddOrRemoveWishlist = async (isInList, setInList) => {
     if (auth.currentUser) {
       const userRef = doc(db, "users", auth.currentUser.uid);
       const item = {
         id: data.id,
         title: data.title || data.name,
         poster_path: `${imageURL}${data.poster_path}`,
-        media_type: params.explore, 
-        release_date: data.release_date || data.first_air_date, 
-        vote_average: data.vote_average, 
+        media_type: params.explore,
+        release_date: data.release_date || data.first_air_date,
+        vote_average: data.vote_average,
       };
 
       try {
         await updateDoc(userRef, {
-          [listType]: isInList ? arrayRemove(item) : arrayUnion(item),
+          wishlist: isInList ? arrayRemove(item) : arrayUnion(item),
         });
         setInList(!isInList);
-        toast.success(`${isInList ? "Removed from" : "Added to"} ${listType === "wishlist" ? "Wishlist" : "Favorites"}!`, {
+        toast.success(`${isInList ? "Removed from" : "Added to"} Wishlist!`, {
           position: "top-center",
           theme: "dark",
           autoClose: 1200,
-          hideProgressBar: true
+          hideProgressBar: true,
         });
       } catch (error) {
-        toast.error(`Failed to ${isInList ? "remove from" : "add to"} ${listType}.`,{
-          position: "top-center",
-          autoClose: 1200,
-          theme: "dark",
-          hideProgressBar: true
-        });
-        console.error(`Error updating ${listType}:`, error);
+        toast.error(
+          `Failed to ${isInList ? "remove from" : "add to"} Wishlist.`,
+          {
+            position: "top-center",
+            autoClose: 1200,
+            theme: "dark",
+            hideProgressBar: true,
+          }
+        );
+        console.error("Error updating wishlist:", error);
       }
     } else {
       toast.warning("Please log in to modify your list.");
+    }
+  };
+
+  const handlePlayBtn = async ()=>{
+    
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      const item = {
+        id: data.id,
+        title: data.title || data.name,
+        poster_path: `${imageURL}${data.poster_path}`,
+        media_type: params.explore,
+        release_date: data.release_date || data.first_air_date,
+        vote_average: data.vote_average,
+      };
+  
+      try {
+        // Fetch the current list
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          const userData = userSnapshot.data();
+          const currentlyWatching = userData?.CurrentlyWatching || [];
+  
+          // Check if the item is already in the list
+          const isInList = currentlyWatching.some(
+            (currentItem) => currentItem.id === item.id
+          );
+  
+          if (!isInList) {
+            // Add to Currently Watching if not in the list
+            await updateDoc(userRef, {
+              CurrentlyWatching: arrayUnion(item),
+            });
+            console.log("Added to Currently Watching");
+          } else {
+            console.log("Already in Currently Watching list");
+          }
+  
+          // Navigate to the player regardless of the list status
+          Navigate(`/player/${params?.explore}/${data?.id}`);
+        } else {
+          console.error("User document does not exist");
+        }
+      } catch (error) {
+        console.error("Error updating Currently Watching:", error);
+      }
     }
   };
 
@@ -101,9 +160,8 @@ const DetailPage = () => {
     });
   }, [params.id]);
 
-
   return (
-    <div>
+    <div >
       <div className="w-full h-[350px] relative">
         <div className="h-full w-full">
           {!isLoaded && <Loading />}
@@ -123,8 +181,8 @@ const DetailPage = () => {
 
         <div className=" absolute w-full h-full top-0 bg-gradient-to-t from-zinc-950/100 to-transparent"></div>
       </div>
-      <div className=" container mx-auto px-4 py-16 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-10">
-        <div className=" relative mx-auto md:mx-0 md:-mt-24  lg:-mt-36 w-fit min-w-60 hidden md:block">
+      <div className=" container mx-auto px-4 py-1 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-8">
+        <div className=" relative mx-auto md:mx-0 md:-mt-24 lg:-mt-36 w-64 min-w-64 hidden md:block">
           {data?.poster_path ? (
             <img
               src={imageURL + data?.poster_path}
@@ -139,40 +197,36 @@ const DetailPage = () => {
             </Card>
           )}
 
-          <button
-            className=" bg-white w-[250px] px-1 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all "
-            onClick={() => {
-              Navigate(`/player/${params?.explore}/${data?.id}`);
-            }}
-          >
-            Play now
-          </button>
-          <div className="flex flex-col items-center space-y-2 mt-4">
+          <div className="flex w-full">
             <button
-              onClick={() => handleAddOrRemove("wishlist", inWishlist, setInWishlist)}
-              className={`px-4 py-2 ${inWishlist ? "bg-yellow-600" : "bg-yellow-500"} text-white rounded hover:bg-yellow-600`}
+              className=" bg-white w-[250px] px-1 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all "
+              onClick={handlePlayBtn}
             >
-              {inWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+              Play now
             </button>
             <button
-              onClick={() => handleAddOrRemove("favorites", inFavorites, setInFavorites)}
-              className={`px-4 py-2 ${inFavorites ? "bg-red-600" : "bg-red-500"} text-white rounded hover:bg-red-600`}
+              onClick={() =>
+                handleAddOrRemoveWishlist(inWishlist, setInWishlist)
+              }
+              className="pl-2 text-white rounded relative active:scale-95 group"
             >
-              {inFavorites ? "Remove from Favorites" : "Add to Favorites"}
+              {inWishlist ? (
+                <MdPlaylistAddCheck size={32} />
+              ) : (
+                <MdPlaylistAdd size={32} />
+              )}
+              <p className="absolute text-[15px] bottom-0 left-[9px] opacity-70">
+                list
+              </p>             
+              <span className=" w-20 absolute top-[-2rem] left-[-1rem] bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                {inWishlist ? "Remove from list" : (<p className=" pt-1 h-6">Add To List</p>)}
+              </span>
             </button>
           </div>
         </div>
 
-        <div>
-          <button
-            className=" hidden bg-white w-40 px-4 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all max-md:px-1 max-md:py-1 max-md:block "
-            onClick={() => {
-              Navigate(`/player/${params?.explore}/${data?.id}`);
-            }}
-          >
-            Play now
-          </button>
-          <h2 className=" text-2xl md:text-3xl lg:text-4xl font-bold text-white pb-2">
+        <div>         
+          <h2 className=" text-2xl md:text-3xl lg:text-4xl font-bold text-white pt-2 pb-2">
             {data?.title || data?.name}
           </h2>
           <p className=" capitalize text-neutral-400 ">{data?.tagline}</p>
@@ -180,6 +234,7 @@ const DetailPage = () => {
             <p>
               <b>Rating :</b> {Number(data?.vote_average).toFixed(1)}
             </p>
+            
             <span>|</span>
             <p>
               <b>Views : </b>
@@ -190,6 +245,29 @@ const DetailPage = () => {
               <b>Duration : </b>
               {duration[0]}h {duration[1]}m
             </p>
+          </div>
+          <div className="flex w-full justify-center">
+          <button
+            className=" hidden bg-white w-80 h-10 px-4 py-4 text-black font-bold rounded mt-1 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md transition-all max-md:px-1 max-md:py-1 max-md:block "
+            onClick={handlePlayBtn}
+          >
+            Play now
+          </button>
+            <button
+              onClick={() =>
+                handleAddOrRemoveWishlist(inWishlist, setInWishlist)
+              }
+              className="pl-4 pt-1 text-white rounded relative active:scale-95 hidden max-md:block"
+            >
+              {inWishlist ? (
+                <FaCheck size={24} />
+              ) : (
+                <FaPlus size={24} />
+              )}
+              <p className="w-10 absolute text-[12px] bottom-[-5px] left-[10px] opacity-70">
+                My list
+              </p>             
+            </button>
           </div>
           <div>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
@@ -287,6 +365,9 @@ const DetailPage = () => {
           <CardRow data={recommendedData} heading={`Recommended `} />
         </div>
       )}
+      <div className="bg-zinc-950 h-1">
+
+      </div>
     </div>
   );
 };

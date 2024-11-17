@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import Card from './Card'
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
-const CardRow = ({ data = [], heading, trending, media_type }) => {
+const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
 
     const containerRef = useRef()
 
@@ -28,6 +28,7 @@ const CardRow = ({ data = [], heading, trending, media_type }) => {
                                 index={index + 1}
                                 trending={trending}
                                 media_type={media_type}
+                                Dots={Dots}
                             />
                         ))}
                 </div>

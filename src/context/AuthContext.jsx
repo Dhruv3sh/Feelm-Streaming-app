@@ -16,9 +16,9 @@ export function AuthProvider({ children }) {
       dispatch(setLoading(true));
 
       if (currentUser) {
-        const { uid, Name, email, profileImageUrl } = currentUser;
+        const { uid, email } = currentUser;
         // Dispatch serialized user to Redux
-        dispatch(setUser({ uid, Name, email, profileImageUrl }));
+        dispatch(setUser({ uid, email }));
 
         // Fetch and set profile data
         await fetchProfileData(uid);

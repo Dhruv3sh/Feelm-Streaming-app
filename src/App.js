@@ -38,9 +38,6 @@ function App() {
     fetchConfiguration();
   }, []);
 
-  const location = useLocation();
-  const hideFooter = location.pathname === "/UserLogin" || location.pathname === "/UserSignup" || location.pathname === "/Profile";
-  
 
   return (
     <main className="pb-14 lg:pb-0">
@@ -50,7 +47,7 @@ function App() {
       <div>
         <ToastContainer/>
         <Outlet />
-        {!hideFooter && <Footer/>}
+        
       </div>
       <MobileNavigation />
       </AuthProvider>

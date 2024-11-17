@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { setUser, setProfileData } from "../store/authSlice";
 import { useAuth } from "../context/AuthContext"; // Import the context hook
 import { doc, updateDoc } from "firebase/firestore";
+import { ImUser } from "react-icons/im";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -71,20 +72,12 @@ const ProfilePage = () => {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="text-4xl flex justify-center items-center bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center h-screen pt-12">
-        Log in to view your profile...
-      </div>
-    );
-  }
-
   const profileImage = profileData?.profileImageUrl || "/images/default.png";
 
   return (
-    <div className="h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
+    <div className=" h-[696px] md:h-screen bg-[url('../public/images/hero.jpg')] bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
       <div className="h-[540px] w-80 max-sm:h-[450px] max-sm:w-[330px] bg-black opacity-85">
-        <div className="h-full flex justify-center flex-col">
+        <div className=" flex justify-center flex-col">
           <div className="w-full flex justify-center relative pt-6">
             <img
               src={profileImage}

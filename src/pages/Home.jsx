@@ -6,7 +6,6 @@ import CardRow from "../components/CardRow";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
-
 export default function Home() {
   const { user } = useAuth();
   const trendingData = useSelector((state) => state.FeelmData.bannerData);
@@ -14,38 +13,46 @@ export default function Home() {
   const { data: topRatedData } = useFetch("/movie/top_rated");
   const { data: topRatedTv } = useFetch("/tv/top_rated");
   const { data: popularTv } = useFetch("/tv/popular");
-  const { data: wishlistData  } = useFetch("",true,user);
+  const { data: wishlistData } = useFetch("", true, user, "wishlist");
+  const { data: CurrentlyWatchingData } = useFetch(
+    "",
+    true,
+    user,
+    "CurrentlyWatching"
+  );
   const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   useEffect(() => {
-    const redirectedFromSignup = localStorage.getItem("redirectedFromSignup") === "true";
-    const redirectedFromLogin= localStorage.getItem("redirectedFromLogin") === "true";
-    
+    const redirectedFromSignup =
+      localStorage.getItem("redirectedFromSignup") === "true";
+    const redirectedFromLogin =
+      localStorage.getItem("redirectedFromLogin") === "true";
+
     if (redirectedFromSignup) {
       // Show toast message
-      toast.success('Registered Successfully!', {
+      toast.success("Registered Successfully!", {
         position: "top-center",
         autoClose: 2000,
         theme: "dark",
         hideProgressBar: true,
-      })
+      });
       localStorage.removeItem("redirectedFromSignup");
-    }else if(redirectedFromLogin){
-      toast.success('Loged in Successfully!', {
+    } else if (redirectedFromLogin) {
+      toast.success("Loged in Successfully!", {
         position: "top-center",
         autoClose: 2000,
         theme: "dark",
         hideProgressBar: true,
-      })
+      });
       localStorage.removeItem("redirectedFromLogin");
     }
   }, [user]);
 
-
-  useEffect(()=>{
-    const redirectedFromProfile = localStorage.getItem("redirectedFromProfile") === "true";
-    if(redirectedFromProfile){
-      toast.success('Loged out Successfully!', {
+  useEffect(() => {
+    const redirectedFromProfile =
+      localStorage.getItem("redirectedFromProfile") === "true";
+    if (redirectedFromProfile) {
+      toast.success("Loged out Successfully!", {
         position: "top-center",
         autoClose: 2000,
         theme: "dark",
@@ -53,8 +60,7 @@ export default function Home() {
       });
       localStorage.removeItem("redirectedFromProfile");
     }
-  },[]);
-  
+  }, []);
 
   // Set a timeout to show content after some time (simulating loading)
   useEffect(() => {
@@ -64,34 +70,31 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-
   return (
-    <div className="tracking-[0.5px]">
+    <div className="tracking-[0.5px] ">
       <Banner />
       {/* Render the rest of the content after a delay */}
       {isContentLoaded && (
         <>
-          <CardRow data={trendingData} heading={"Trending Now"} trending={true} />
-          
-          {user ? (
-            wishlistData && wishlistData.length > 0 ? (
-              <CardRow
-                data={wishlistData}
-                heading={"Your Wishlist"}
-                media_type={"movie"}
-              />
-            ) : (
-              <p className=" hidden text-center text-gray-500 my-4">Your wishlist is empty</p>
-            )
-          ) : (
-            <p className=" hidden text-center text-gray-500 my-4">Please log in to see your wishlist</p>
-          )}
-          
+          <CardRow
+            data={trendingData}
+            heading={"Trending Now"}
+            trending={true}
+          />
+
           <CardRow
             data={nowPlayingData}
             heading={"Now Playing In Theaters"}
             media_type={"movie"}
           />
+          {user && CurrentlyWatchingData.length > 0 && (
+            <CardRow
+              data={CurrentlyWatchingData}
+              heading={"Continue Watching"}
+              media_type={"movie"}
+              Dots={true}
+            />
+          )}
           <CardRow
             data={topRatedData}
             heading={"Top Rated Movies"}
@@ -102,6 +105,13 @@ export default function Home() {
             heading={"Top Rated TV Shows"}
             media_type={"tv"}
           />
+          {user && wishlistData && wishlistData.length > 0 && (
+            <CardRow
+              data={wishlistData}
+              heading={"Your Wishlist"}
+              media_type={"movie"}
+            />
+          )}
           <CardRow
             data={popularTv}
             heading={"Popular TV Shows"}
@@ -109,6 +119,7 @@ export default function Home() {
           />
         </>
       )}
+      <div className="bg-zinc-950 h-1"></div>
     </div>
   );
 }

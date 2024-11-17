@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link, NavLink } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
-import { FaUserCircle } from "react-icons/fa";
 import { navigation } from "../contants/Navigation";
-import { Button } from "@nextui-org/react";
 import { useAuth } from "../context/AuthContext";
+import { ImUser } from "react-icons/im";
+import {
+  Avatar,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  User,
+} from "@nextui-org/react";
 
 const Header = () => {
   const location = useLocation();
@@ -13,8 +20,6 @@ const Header = () => {
   const [navbar, setNavbar] = useState(false);
   const navigate = useNavigate();
   const { user, profileData } = useAuth();
-
-  console.log(profileData);
 
   const handleButtonClick = () => {
     navigate("/search");
@@ -111,36 +116,54 @@ const Header = () => {
           </form>
 
           {user ? (
-            <div className="w-full h-full mr-2 pt-2 active:scale-90 transition-all hover:scale-105 duration-150">
-              <Link to="/Profile">
-                <button>
-                  {/* Display the profile image or FaUserCircle */}
-                  {profileData ? (
-                    <img
-                      src={profileData?.profileImageUrl}
-                      className="h-8 w-8 rounded-full"
-                      alt="profile"
-                      loading="lazy" // Lazy load the image
-                    />
-                  ) : (
-                    <FaUserCircle size={30} />
-                  )}
-                </button>
-              </Link>
-            </div>
-          ) : (
-            <div className="w-full h-full mr-1 active:scale-90 transition-all hover:scale-105 duration-150">
-              <Link to="/UserLogin">
-                <Button
-                  radius="full"
-                  size="sm"
-                  className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
-                >
-                  Sign in
-                </Button>
-              </Link>
-            </div>
-          )}
+        <div className="dropdrown">
+          <Dropdown placement="bottom-end" className=" bg-black text-white">
+            <DropdownTrigger >
+              <Avatar
+                as="button"
+                className="transition-transform "
+                src={profileData?.profileImageUrl || '/images/default.png'}
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat" className="bg-black opacity-90
+            ">
+              
+              <DropdownItem key="profile" className="gap-2" href="/profile">
+                My Profile
+              </DropdownItem>
+          
+              <DropdownItem key="my_wishlist" href="/MyList">
+                My List
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+      ) : (
+        <div className="dropdrown">
+          <Dropdown placement="bottom-end" className=" bg-black text-white">
+            <DropdownTrigger>
+              <Avatar
+                as="button"
+                className="transition-transform "              
+              ><ImUser/></Avatar>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="orders" className="h-10 gap-2" isReadOnly>
+                <p>Welcome</p>
+                <p>To access account and List</p>
+              </DropdownItem>
+              <DropdownItem
+                key="profile"
+                className="h-10 gap-2 text-red-900 border-1 text-center "
+                href="/UserLogin"
+                color="danger"
+              >
+                <button>LOGIN / SIGNUP</button>
+              </DropdownItem>
+
+            </DropdownMenu>
+          </Dropdown>
+        </div>)}
         </div>
       </div>
     </header>
