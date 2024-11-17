@@ -81,12 +81,6 @@ export default function Home() {
             heading={"Trending Now"}
             trending={true}
           />
-
-          <CardRow
-            data={nowPlayingData}
-            heading={"Now Playing In Theaters"}
-            media_type={"movie"}
-          />
           {user && CurrentlyWatchingData.length > 0 && (
             <CardRow
               data={CurrentlyWatchingData}
@@ -95,6 +89,12 @@ export default function Home() {
               Dots={true}
             />
           )}
+          <CardRow
+            data={nowPlayingData}
+            heading={"Now Playing In Theaters"}
+            media_type={"movie"}
+          />
+          
           <CardRow
             data={topRatedData}
             heading={"Top Rated Movies"}
