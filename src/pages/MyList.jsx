@@ -49,6 +49,7 @@ function MyList() {
           Your List is Empty..
         </h1>
       )}
+      <div className="bg-zinc-950 h-1"></div>
     </div>
   );
 }
