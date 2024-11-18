@@ -1,8 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import MobileNavigation from "./components/MobileNavigation";
 import axios from "axios";
 import { useEffect } from "react";
@@ -47,7 +45,6 @@ function App() {
       <div>
         <ToastContainer/>
         <Outlet />
-        
       </div>
       <MobileNavigation />
       </AuthProvider>

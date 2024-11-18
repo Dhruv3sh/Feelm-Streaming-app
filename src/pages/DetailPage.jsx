@@ -208,16 +208,13 @@ const DetailPage = () => {
               onClick={() =>
                 handleAddOrRemoveWishlist(inWishlist, setInWishlist)
               }
-              className="pl-2 text-white rounded relative active:scale-95 group"
+              className="pl-2 pt-4 text-white rounded relative active:scale-95 group"
             >
               {inWishlist ? (
-                <MdPlaylistAddCheck size={32} />
+                <MdPlaylistAddCheck size={34} />
               ) : (
-                <MdPlaylistAdd size={32} />
-              )}
-              <p className="absolute text-[15px] bottom-0 left-[9px] opacity-70">
-                list
-              </p>             
+                <MdPlaylistAdd size={34} />
+              )}             
               <span className=" w-20 absolute top-[-2rem] left-[-1rem] bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 {inWishlist ? "Remove from list" : (<p className=" pt-1 h-6">Add To List</p>)}
               </span>

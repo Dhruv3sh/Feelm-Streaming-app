@@ -16,14 +16,15 @@ function MyList() {
     const timeout = setTimeout(() => {
       setDelayedData(wishlistData); 
       setLoading(false);
-    }, 550);
+    }, 600);
 
     return () => clearTimeout(timeout); // Cleanup timeout
   }, [wishlistData]); // Re-run whenever wishlistData changes
 
   return (
     <div className="bg-zinc-950 min-h-screen w-full pt-[70px]">
-      <h3 className="capitalize text-lg lg:text-xl font-semibold my-3 pl-3">
+      <div className='container mx-auto'>
+      <h3 className="capitalize text-lg lg:text-xl font-semibold my-3 pl-5">
         My WishList
       </h3>
       {loading ? (
@@ -33,7 +34,7 @@ function MyList() {
         </div>
       ) : delayedData?.length > 0 ? (
         // Show wishlist if data exists
-        <div className="grid grid-cols-5 pl-3 gap-y-4 lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-3 max-sm:grid-cols-2">
+        <div className="md:grid md:grid-cols-5 pl-2 md:pl-6 md:gap-y-5 lg:grid-cols-4 xl:grid-cols-5 flex gap-[2px] flex-wrap">
           {delayedData.map((elem, index) => (
             <Card
               data={elem}
@@ -50,6 +51,7 @@ function MyList() {
         </h1>
       )}
       <div className="bg-zinc-950 h-1"></div>
+      </div>  
     </div>
   );
 }
