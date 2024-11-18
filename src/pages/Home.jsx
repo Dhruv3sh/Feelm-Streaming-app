@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
@@ -62,7 +62,7 @@ export default function Home() {
 
   return (
     <div className="tracking-[0.5px] ">
-      
+
       <Banner />
       <CardRow data={trendingData} heading={"Trending Now"} trending={true} />
       {user && CurrentlyWatchingData.length > 0 && (

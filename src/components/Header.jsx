@@ -11,7 +11,6 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { useSelector } from "react-redux";
-import MyList from "../pages/MyList";
 
 const Header = () => {
   const location = useLocation();

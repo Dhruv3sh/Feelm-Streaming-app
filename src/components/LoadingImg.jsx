@@ -3,7 +3,7 @@ import React from 'react'
 
 const LoadingImg = () => {
     return (
-        <Card className="w-[200px] space-y-5 " radius="sm">
+        <Card className="w-[180px] space-y-5 " radius="sm">
             <Skeleton className="rounded-sm">
                 <div className=" h-72 rounded-lg bg-default-300"></div>
             </Skeleton>
