@@ -3,11 +3,10 @@ import { useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
-import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
   const trendingData = useSelector((state) => state.FeelmData.bannerData);
   const { data: nowPlayingData } = useFetch("/movie/now_playing");
   const { data: topRatedData } = useFetch("/movie/top_rated");
@@ -20,7 +19,6 @@ export default function Home() {
     user,
     "CurrentlyWatching"
   );
-  const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   useEffect(() => {
     const redirectedFromSignup =
@@ -62,63 +60,47 @@ export default function Home() {
     }
   }, []);
 
-  // Set a timeout to show content after some time (simulating loading)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsContentLoaded(true);
-    }, 100); // Delay the loading for other components (can be adjusted)
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="tracking-[0.5px] ">
+      
       <Banner />
-      {/* Render the rest of the content after a delay */}
-      {isContentLoaded && (
-        <>
-          <CardRow
-            data={trendingData}
-            heading={"Trending Now"}
-            trending={true}
-          />
-          {user && CurrentlyWatchingData.length > 0 && (
-            <CardRow
-              data={CurrentlyWatchingData}
-              heading={"Continue Watching"}
-              media_type={"movie"}
-              Dots={true}
-            />
-          )}
-          <CardRow
-            data={nowPlayingData}
-            heading={"Now Playing In Theaters"}
-            media_type={"movie"}
-          />
-          
-          <CardRow
-            data={topRatedData}
-            heading={"Top Rated Movies"}
-            media_type={"movie"}
-          />
-          <CardRow
-            data={topRatedTv}
-            heading={"Top Rated TV Shows"}
-            media_type={"tv"}
-          />
-          {user && wishlistData && wishlistData.length > 0 && (
-            <CardRow
-              data={wishlistData}
-              heading={"Your Wishlist"}
-              media_type={"movie"}
-            />
-          )}
-          <CardRow
-            data={popularTv}
-            heading={"Popular TV Shows"}
-            media_type={"tv"}
-          />
-        </>
+      <CardRow data={trendingData} heading={"Trending Now"} trending={true} />
+      {user && CurrentlyWatchingData.length > 0 && (
+        <CardRow
+          data={CurrentlyWatchingData}
+          heading={"Continue Watching"}
+          media_type={"movie"}
+          Dots={true}
+        />
       )}
+      <CardRow
+        data={nowPlayingData}
+        heading={"Now Playing In Theaters"}
+        media_type={"movie"}
+      />
+
+      <CardRow
+        data={topRatedData}
+        heading={"Top Rated Movies"}
+        media_type={"movie"}
+      />
+      <CardRow
+        data={topRatedTv}
+        heading={"Top Rated TV Shows"}
+        media_type={"tv"}
+      />
+      {user && wishlistData && wishlistData.length > 0 && (
+        <CardRow
+          data={wishlistData}
+          heading={"Your Wishlist"}
+          media_type={"movie"}
+        />
+      )}
+      <CardRow
+        data={popularTv}
+        heading={"Popular TV Shows"}
+        media_type={"tv"}
+      />
       <div className="bg-zinc-950 h-1"></div>
     </div>
   );

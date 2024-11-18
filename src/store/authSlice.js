@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../components/Firebase";
 
 const initialState = {
   user: null,
   isLoading: false,
   error: null,
-  profileData: null, // Merged from profileSlice
-  profileLoading: false, // Merged from profileSlice
-  profileError: null, // Merged from profileSlice
+  profileData: null,
+  profileLoading: false,
+  profileError: null,
 };
 
 const authSlice = createSlice({
@@ -24,9 +27,8 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      state.profileData = null; // Clear profile data on logout
+      state.profileData = null;
     },
-    // Profile-related reducers
     setProfileData: (state, action) => {
       state.profileData = action.payload;
     },
@@ -48,5 +50,39 @@ export const {
   setProfileLoading,
   setProfileError,
 } = authSlice.actions;
+
+// Async Thunks
+export const listenToAuthChanges = () => (dispatch) => {
+  dispatch(setLoading(true));
+  onAuthStateChanged(auth, async (currentUser) => {
+    if (currentUser) {
+      const { uid, email } = currentUser;
+      dispatch(setUser({ uid, email }));
+      dispatch(fetchProfileData(uid)); // Fetch profile data for the logged-in user
+    } else {
+      dispatch(logout());
+    }
+    dispatch(setLoading(false));
+  });
+};
+
+export const fetchProfileData = (uid) => async (dispatch) => {
+  dispatch(setProfileLoading(true));
+  try {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      dispatch(setProfileData(docSnap.data()));
+    } else {
+      dispatch(setProfileData(null));
+      console.error("No user data found.");
+    }
+  } catch (error) {
+    dispatch(setProfileError(error.message));
+    console.error("Error fetching profile data:", error.message);
+  } finally {
+    dispatch(setProfileLoading(false));
+  }
+};
 
 export default authSlice.reducer;

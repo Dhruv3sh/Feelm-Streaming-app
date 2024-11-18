@@ -5,20 +5,15 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiEdit } from "react-icons/ti";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser, setProfileData } from "../store/authSlice";
-import { useAuth } from "../context/AuthContext"; // Import the context hook
 import { doc, updateDoc } from "firebase/firestore";
-import { ImUser } from "react-icons/im";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // Get data from AuthContext
-  const { user, profileData } = useAuth(); // Access global state
-
-  const [file, setFile] = useState(null); // Temporary state for file upload
+  const { user, profileData } = useSelector((state)=> state.auth);
+  const [file, setFile] = useState(null);
 
   // Upload new image to Firebase Storage
   const handleFileUpload = async (selectedFile) => {

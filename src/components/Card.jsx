@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
 import LoadingImg from './LoadingImg';
 import { RxCross2 } from "react-icons/rx";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { useAuth } from '../context/AuthContext';
 import { db } from "../components/Firebase"; // Update this path based on your setup
 
 const Card = ({ data, trending, Dots, index, media_type }) => {
     const imageURL = useSelector(state => state.FeelmData.imageURL);
     const [isLoaded, setIsLoaded] = useState(false);
-    const { user } = useAuth();
+    const { user } = useSelector((state)=> state.auth);
 
     const handleImageLoad = () => {
         setIsLoaded(true);

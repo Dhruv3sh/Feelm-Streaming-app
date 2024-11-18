@@ -8,30 +8,43 @@ const Banner = () => {
     const bannerData = useSelector(state => state.FeelmData.bannerData)
     const imageURL = useSelector(state => state.FeelmData.imageURL)
     const [isLoaded, setIsLoaded] = useState(false);
+    const [currentImage, setCurrentImage] = useState(0)
+    const [timer, setTimer] = useState(null);
 
     const handleImageLoad = () => {
         setIsLoaded(true);
     };
 
-    const [currentImage, setCurrentImage] = useState(0)
+    const resetTimer = () => {
+        if (timer) {
+            clearInterval(timer); // Clear the current interval
+        }
+        // Start a new interval
+        const newTimer = setInterval(() => {
+            setCurrentImage((prevImage) => (prevImage < bannerData.length - 1 ? prevImage + 1 : 0));
+        }, 4000);
+        setTimer(newTimer); // Save the new interval
+    };
 
     const handleNext = () => {
         setCurrentImage((prevImage) => (prevImage < bannerData.length - 1 ? prevImage + 1 : 0));
-
+        resetTimer(); 
     }
 
     const handlePrevious = () => {
         setCurrentImage((prevImage) => (prevImage > 0 ? prevImage - 1 : bannerData.length - 1));
+        resetTimer(); 
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImage((prevImage) => (prevImage < bannerData.length - 1 ? prevImage + 1 : setCurrentImage(0)));
-
-        }, 3500)
-
-        return () => clearInterval(interval)
-    }, [bannerData])
+        
+        const initialTimer = setInterval(() => {
+            setCurrentImage((prevImage) => (prevImage < bannerData.length - 1 ? prevImage + 1 : 0));
+        }, 4000);
+        setTimer(initialTimer); 
+        
+        return () => clearInterval(initialTimer);
+    }, [bannerData]);
 
     if (!bannerData || bannerData.length === 0) {
         return <Loading />;
@@ -43,7 +56,7 @@ const Banner = () => {
                 {
                     bannerData.map((data, index) => {
                         return (
-                            <div key={data.id || index} className=' min-w-full min-h-[450px] lg:min-h-full overflow-hidden relative group transition-all duration-700 ' style={{ transform: `translateX(-${currentImage * 100}%)` }}>
+                            <div key={data.id || index} className=' min-w-full min-h-[450px] lg:min-h-full overflow-hidden relative transition-all duration-700 ' style={{ transform: `translateX(-${currentImage * 100}%)` }}>
                                 <div className='w-full h-full'>
                                     {!isLoaded && <Loading />}
                                     {data?.backdrop_path && <img
@@ -55,7 +68,7 @@ const Banner = () => {
 
                                 </div>
 
-                                <div className='absolute top-0 w-full h-full text-black hidden items-center justify-between group-hover:lg:flex '>
+                                <div className='absolute top-0 w-full h-full text-black hidden items-center justify-between lg:flex '>
                                     <button onClick={handlePrevious} className=' pl-4 hover:scale-110 active:scale-75 z-10'>
                                         <FaAngleLeft size={24} />
                                     </button>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link, NavLink } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { navigation } from "../contants/Navigation";
-import { useAuth } from "../context/AuthContext";
 import { ImUser } from "react-icons/im";
 import {
   Avatar,
@@ -10,8 +9,9 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  User,
 } from "@nextui-org/react";
+import { useSelector } from "react-redux";
+import MyList from "../pages/MyList";
 
 const Header = () => {
   const location = useLocation();
@@ -19,7 +19,7 @@ const Header = () => {
   const [inputValue, setInputValue] = useState(removeSpace);
   const [navbar, setNavbar] = useState(false);
   const navigate = useNavigate();
-  const { user, profileData } = useAuth();
+  const { user, profileData } = useSelector((state)=> state.auth);
 
   const handleButtonClick = () => {
     navigate("/search");
@@ -117,7 +117,7 @@ const Header = () => {
 
           {user ? (
         <div className="dropdrown">
-          <Dropdown placement="bottom-end" className=" bg-black text-white">
+          <Dropdown placement="bottom-end" className=" bg-black text-white max-w-[130px] min-w-28">
             <DropdownTrigger >
               <Avatar
                 as="button"
@@ -125,15 +125,19 @@ const Header = () => {
                 src={profileData?.profileImageUrl || '/images/default.png'}
               />
             </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat" className="bg-black opacity-90
+            <DropdownMenu aria-label="Profile Actions" variant="light" className="max-w-[130px] min-w-28
             ">
               
-              <DropdownItem key="profile" className="gap-2" href="/profile">
+              <DropdownItem key="profile" className="gap-1">
+                <Link to='Profile'>
                 My Profile
+                </Link>
               </DropdownItem>
           
-              <DropdownItem key="my_wishlist" href="/MyList">
+              <DropdownItem key="my_wishlist">
+                <Link to='MyList'>
                 My List
+                </Link>
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

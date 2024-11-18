@@ -8,10 +8,14 @@ import { useDispatch } from "react-redux";
 import { setBannerData, setImageURL } from "./store/FeelmSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthProvider } from "./context/AuthContext";
+import { listenToAuthChanges } from "./store/authSlice";
 
 function App() {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(listenToAuthChanges());
+  }, [dispatch]);
 
   const fetchTrendingData = async () => {
     try {
@@ -39,15 +43,12 @@ function App() {
 
   return (
     <main className="pb-14 lg:pb-0">
-      
-      <AuthProvider>
       <Header />
       <div>
         <ToastContainer/>
         <Outlet />
       </div>
-      <MobileNavigation />
-      </AuthProvider>
+      <MobileNavigation />   
     </main>
   );
 }

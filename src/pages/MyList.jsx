@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
 import useFetch from '../hooks/useFetch';
 import Card from '../components/Card';
-import Loader from '../components/Loader'; // Assume you have a Loader component
+import Loader from '../components/Loader'; 
+import { useSelector } from 'react-redux';
 
 function MyList() {
-  const { user } = useAuth();
+  const { user } = useSelector((state)=> state.auth);
   const { data: wishlistData } = useFetch("", true, user, "wishlist"); // Fetch data at top level
   const [loading, setLoading] = useState(true); // State for loading status
   const [delayedData, setDelayedData] = useState(null); // State for delayed data
 
-  // Handle simulated delay
+  
   useEffect(() => {
     setLoading(true);
     const timeout = setTimeout(() => {
@@ -18,8 +18,8 @@ function MyList() {
       setLoading(false);
     }, 600);
 
-    return () => clearTimeout(timeout); // Cleanup timeout
-  }, [wishlistData]); // Re-run whenever wishlistData changes
+    return () => clearTimeout(timeout);
+  }, [wishlistData]); 
 
   return (
     <div className="bg-zinc-950 min-h-screen w-full pt-[70px]">
@@ -50,7 +50,7 @@ function MyList() {
           Your List is Empty..
         </h1>
       )}
-      <div className="bg-zinc-950 h-1"></div>
+      <div className="bg-zinc-950 h-2"></div>
       </div>  
     </div>
   );
