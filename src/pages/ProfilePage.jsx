@@ -8,20 +8,32 @@ import { TiEdit } from "react-icons/ti";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setProfileData } from "../store/authSlice";
 import { doc, updateDoc } from "firebase/firestore";
+import AvatarEditor from "react-avatar-editor";
+import { RxCross2 } from "react-icons/rx";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, profileData } = useSelector((state)=> state.auth);
+  const { user, profileData } = useSelector((state) => state.auth);
   const [file, setFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [editorRef, setEditorRef] = useState(null);
+  const [isEditorVisible, setIsEditorVisible] = useState(false);
 
   // Upload new image to Firebase Storage
-  const handleFileUpload = async (selectedFile) => {
-    if (selectedFile) {
+  const handleFileUpload = async () => {
+    if (file && editorRef) {
       try {
-        const fileRef = ref(storage, `profileImages/${user.uid}`);
-        await uploadBytes(fileRef, selectedFile);
+        // Get image data from the editor (cropped area)
+        const canvas = editorRef.getImageScaledToCanvas();
+        const croppedImage = canvas.toDataURL(); // Convert cropped image to data URL
 
+        // Upload cropped image to Firebase Storage
+        const fileRef = ref(storage, `profileImages/${user.uid}`);
+        const response = await fetch(croppedImage);
+        const blob = await response.blob();
+
+        await uploadBytes(fileRef, blob);
         const downloadURL = await getDownloadURL(fileRef);
 
         // Update Firestore with new profile image URL
@@ -36,6 +48,8 @@ const ProfilePage = () => {
           hideProgressBar: true,
           theme: "dark",
         });
+
+        setIsEditorVisible(false); // Hide editor after uploading
       } catch (error) {
         toast.error("Error updating image, try a different image", {
           position: "top-center",
@@ -51,7 +65,8 @@ const ProfilePage = () => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      handleFileUpload(selectedFile);
+      setImagePreview(URL.createObjectURL(selectedFile)); // Preview the selected image
+      setIsEditorVisible(true); // Show the editor once an image is selected
     }
   };
 
@@ -71,8 +86,8 @@ const ProfilePage = () => {
 
   return (
     <div className=" h-[696px] md:h-screen bg-[url('../public/images/hero.jpg')] bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
-      <div className="h-[540px] w-80 max-sm:h-[450px] max-sm:w-[330px] bg-black opacity-85">
-        <div className=" flex justify-center flex-col">
+      <div className="h-[540px] w-80 max-sm:h-[450px] max-sm:w-[330px] bg-black opacity-85 relative">
+        <div className="flex justify-center flex-col">
           <div className="w-full flex justify-center relative pt-6">
             <img
               src={profileImage}
@@ -84,6 +99,7 @@ const ProfilePage = () => {
               id="fileInput"
               style={{ display: "none" }}
               onChange={handleFileChange}
+              accept="image/jpeg, image/jpg, image/png, image/webp"
             />
             <button
               onClick={() => document.getElementById("fileInput").click()}
@@ -116,8 +132,46 @@ const ProfilePage = () => {
               Logout
             </button>
           </div>
-        </div>
+        </div>     
       </div>
+      {/* Overlay when the editor is visible */}
+        {isEditorVisible && (
+          <>
+            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
+            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-20">
+              <div className="w-full h-full flex justify-center items-center">
+                <div className=" w-[400px] flex flex-col justify-center bg-zinc-900 p-4 rounded-xl shadow-lg relative">
+                  <div className="w-full pl-10">
+                  <AvatarEditor
+                    ref={(ref) => setEditorRef(ref)}
+                    image={imagePreview}
+                    width={250}
+                    height={250}
+                    border={20}
+                    borderRadius={125}
+                    scale={1.2}
+                    rotate={0}
+                  />
+                  </div>       
+                  <div className="flex justify-center gap-4 mt-4">
+                    <button
+                      onClick={handleFileUpload}
+                      className="btn btn-primary bg-white text-black px-6 py-2 rounded-full"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() => setIsEditorVisible(false)}
+                      className="btn btn-primary text-white p-2 rounded-lg absolute top-0 right-0"
+                    >
+                      <RxCross2/>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
     </div>
   );
 };

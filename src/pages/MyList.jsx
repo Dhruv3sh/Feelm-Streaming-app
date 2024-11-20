@@ -24,7 +24,7 @@ function MyList() {
   return (
     <div className="bg-zinc-950 min-h-screen w-full pt-[70px]">
       <div className='container mx-auto'>
-      <h3 className="capitalize text-lg lg:text-xl font-semibold my-3 pl-5">
+      <h3 className="capitalize text-lg lg:text-xl font-semibold my-3 max-sm:ml-2 max-lg:ml-9 lg:ml-5">
         My WishList
       </h3>
       {loading ? (
@@ -34,7 +34,7 @@ function MyList() {
         </div>
       ) : delayedData?.length > 0 ? (
         // Show wishlist if data exists
-        <div className="md:grid md:grid-cols-5 pl-2 md:pl-6 md:gap-y-5 lg:grid-cols-4 xl:grid-cols-5 flex gap-[2px] flex-wrap">
+        <div className="flex gap-1 md:gap-2 flex-wrap max-lg:justify-center lg:ml-5 -gap-y-1">
           {delayedData.map((elem, index) => (
             <Card
               data={elem}

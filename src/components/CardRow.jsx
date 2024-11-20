@@ -14,12 +14,12 @@ const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
     }
    
     return (
-        <div className=" container mx-auto px-3 my-10 ">
+        <div className=" container mx-auto px-3 my-10 box-border ">
             <h2 className=" text-white text-2xl max-md:text-xl font-bold mb-3">{heading}</h2>
 
             <div className="relative">
 
-                <div ref={containerRef} className=" grid grid-cols-[repeat(auto-fit,175px)] max-md:grid-cols-[repeat(auto-fit,125px)] max-sm:grid-cols-[repeat(auto-fit)] grid-flow-col gap-3 max-md:gap-2 overflow-hidden overflow-x-scroll relative z-10 scroll-smooth transition-all scrollbar-none ">
+                <div ref={containerRef} className=" flex gap-3 overflow-hidden overflow-x-scroll relative z-10 scroll-smooth transition-all scrollbar-none ">
                     {
                         data.map((data, index) => (
                             <Card

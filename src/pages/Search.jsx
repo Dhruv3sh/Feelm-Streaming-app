@@ -29,7 +29,7 @@ const Search = () => {
       setTimeout(() => {
         const results = response.data.results;
         setData((prev) => (reset ? results : [...prev, ...results]));
-        setHasMore(results.length > 0); // Check if more data is available
+        setHasMore(results.length > 0);
         setLoading(false);
       }, 600);
     } catch (error) {
@@ -81,7 +81,7 @@ const Search = () => {
         />
       </div>
       <div className="container mx-auto pt-3">    
-        <div className=" md:grid md:grid-cols-5 pl-2 md:pl-6 md:gap-y-5 lg:grid-cols-4 xl:grid-cols-5 flex gap-[2px] flex-wrap">
+        <div className=" flex gap-1 md:gap-2 flex-wrap max-lg:justify-center lg:ml-5 -gap-y-1">
           {data.length > 0 ? (      
             data.map((searchData, index) => (
               <Card
