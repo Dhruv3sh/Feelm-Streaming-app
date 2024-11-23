@@ -117,6 +117,7 @@ const Player = () => {
         media_type={explore}
       />
       <CardRow data={recommendedData} heading="Recommended" />
+      <div className="bg-zinc-950 h-1"></div>
     </div>
   );
 };
