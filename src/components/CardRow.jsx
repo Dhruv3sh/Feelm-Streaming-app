@@ -14,7 +14,7 @@ const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
     }
    
     return (
-        <div className=" container mx-auto px-3 my-10 box-border ">
+        <div className="px-3 my-10 box-border ">
             <h2 className=" text-white text-2xl max-md:text-xl font-bold mb-3">{heading}</h2>
 
             <div className="relative">

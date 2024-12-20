@@ -51,7 +51,7 @@ const Banner = () => {
     }
 
     return (imageURL ?
-        <section className='w-full h-full'>
+        <section >
             <div className='flex min-h-full max-h-[98vh] overflow-hidden'>
                 {
                     bannerData.map((data, index) => {
@@ -80,7 +80,7 @@ const Banner = () => {
 
                                 <div className='absolute top-0 w-full h-full bg-gradient-to-t from-zinc-950 to-transparent'>
                                 </div>
-                                <div className='container mx-auto'>
+                                <div>
                                     <div className=' w-full absolute bottom-0 max-w-md px-3'>
                                         <h2 className=' font-bold text-2xl md:text-4xl text-white drop-shadow-2xl '>{data?.title || data?.name}</h2>
                                         <p className=' text-ellipsis line-clamp-3 max-md:line-clamp-2 my-2'>{data.overview}</p>

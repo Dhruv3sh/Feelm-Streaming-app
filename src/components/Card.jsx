@@ -55,7 +55,7 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
     }
 
     return (
-        <div className=' box-border w-full min-w-[166px] max-w-[166px] min-h-[250px] max-h-[250px] overflow-hidden block rounded-lg relative hover:scale-[1.01] duration-200 max-md:w-[120px] max-md:h-[220px] max-sm:max-w-[130px] max-sm:min-w-[125px] max-sm:max-h-[190px] max-sm:min-h-[190px] '>
+        <div className=' box-border min-w-[150px] max-w-[180px] min-h-[210px] overflow-hidden block rounded-lg relative hover:scale-[1.01] duration-200 max-md:min-w-[150px] max-md:min-h-[220px] max-sm:max-w-[130px] max-sm:min-w-[100px] max-sm:min-h-[120px] '>
             {!isLoaded && <LoadingImg />}
             {data?.poster_path && (
                 <Link to={`/${mediaType}/${data.id}`}>
