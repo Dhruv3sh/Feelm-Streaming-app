@@ -23,7 +23,7 @@ function MyList() {
 
   return (
     <div className="bg-zinc-950 min-h-screen w-full pt-[70px]">
-      <div className='container mx-auto'>
+      <div >
       <h3 className="capitalize text-lg lg:text-xl font-semibold my-3 max-sm:ml-2 max-lg:ml-9 lg:ml-5">
         My WishList
       </h3>
@@ -34,7 +34,7 @@ function MyList() {
         </div>
       ) : delayedData?.length > 0 ? (
         // Show wishlist if data exists
-        <div className="flex gap-1 md:gap-2 flex-wrap max-lg:justify-center lg:ml-5 -gap-y-1">
+        <div className="m-1 grid grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
           {delayedData.map((elem, index) => (
             <Card
               data={elem}
