@@ -86,8 +86,9 @@ const ExplorePage = () => {
                     
           ))}
         </div>
-
+        <div className="min-h-16">
         {loading && <Loader/>}
+        </div>    
       </div>
     </div>
   );

@@ -80,8 +80,8 @@ const Search = () => {
           className="rounded-full w-full px-4 py-1 bg-neutral-300 text-black"
         />
       </div>
-      <div className="container mx-auto pt-3">    
-        <div className=" flex gap-1 md:gap-2 flex-wrap max-lg:justify-center lg:ml-5 -gap-y-1">
+      <div>    
+        <div className="m-1 grid grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
           {data.length > 0 ? (      
             data.map((searchData, index) => (
               <Card
