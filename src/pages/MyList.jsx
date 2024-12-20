@@ -34,7 +34,7 @@ function MyList() {
         </div>
       ) : delayedData?.length > 0 ? (
         // Show wishlist if data exists
-        <div className="m-1 grid grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
+        <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
           {delayedData.map((elem, index) => (
             <Card
               data={elem}

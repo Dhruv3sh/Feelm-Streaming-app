@@ -81,7 +81,7 @@ const Search = () => {
         />
       </div>
       <div>    
-        <div className="m-1 grid grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
+        <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
           {data.length > 0 ? (      
             data.map((searchData, index) => (
               <Card
@@ -91,7 +91,7 @@ const Search = () => {
               />
             ))
           ) : !loading ? (
-            <div className=" w-full flex justify-center col-span-5 pt-16 text-2xl max-sm:text-base ">
+            <div className=" w-full flex justify-center col-span-5 sm:col-span-9 pt-16 text-2xl max-sm:text-base ">
               <p>Search Here your favourite movie or show...</p>
             </div>
           ) : null}

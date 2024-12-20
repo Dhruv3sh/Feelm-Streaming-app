@@ -162,7 +162,7 @@ const DetailPage = () => {
 
   return (
     <div >
-      <div className="w-full h-[350px] relative">
+      <div className="w-full h-[360px] relative">
         <div className="h-full w-full">
           {!isLoaded && <Loading />}
           {imageURL ? (
@@ -181,13 +181,13 @@ const DetailPage = () => {
 
         <div className=" absolute w-full h-full top-0 bg-gradient-to-t from-zinc-950/100 to-transparent"></div>
       </div>
-      <div className=" container mx-auto px-4 py-1 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-8">
-        <div className=" relative mx-auto md:mx-0 md:-mt-24 lg:-mt-36 w-64 min-w-64 hidden md:block">
+      <div className=" px-4 py-1 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-8">
+        <div className=" relative mx-auto md:mx-0 md:-mt-24 lg:-mt-36 w-64 min-w-60 max-lg:min-w-52 hidden md:block">
           {data?.poster_path ? (
             <img
               src={imageURL + data?.poster_path}
               alt="banner"
-              className=" h-80 w-52 lg:h-[360px] lg:w-[450px] lg:max-w-[250px] md:h-[280px] md:w-[600px] max object-cover rounded-md"
+              className=" mih-h-80 object-cover rounded-md"
             />
           ) : (
             <Card className="w-[240px] " radius="sm">
