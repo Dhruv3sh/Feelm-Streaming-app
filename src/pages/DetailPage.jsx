@@ -68,44 +68,53 @@ const DetailPage = () => {
   }, [data?.id]);
 
   const handleAddOrRemoveWishlist = async (isInList, setInList) => {
-    if (auth.currentUser) {
-      const userRef = doc(db, "users", auth.currentUser.uid);
-      const item = {
-        id: data.id,
-        title: data.title || data.name,
-        poster_path: `${imageURL}${data.poster_path}`,
-        media_type: params.explore,
-        release_date: data.release_date || data.first_air_date,
-        vote_average: data.vote_average,
-      };
-
-      try {
-        await updateDoc(userRef, {
-          wishlist: isInList ? arrayRemove(item) : arrayUnion(item),
-        });
-        setInList(!isInList);
-        toast.success(`${isInList ? "Removed from" : "Added to"} Wishlist!`, {
-          position: "top-center",
-          theme: "dark",
-          autoClose: 1200,
-          hideProgressBar: true,
-        });
-      } catch (error) {
-        toast.error(
-          `Failed to ${isInList ? "remove from" : "add to"} Wishlist.`,
-          {
-            position: "top-center",
-            autoClose: 1200,
-            theme: "dark",
-            hideProgressBar: true,
-          }
-        );
-        console.error("Error updating wishlist:", error);
-      }
-    } else {
+    if (!auth.currentUser) {
       toast.warning("Please log in to modify your list.");
+      return;
+    }
+  
+    if (!data || !data.id) {
+      toast.error("Invalid item data. Unable to update wishlist.", {
+        position: "top-center",
+        theme: "dark",
+        autoClose: 1200,
+        hideProgressBar: true,
+      });
+      return;
+    }
+  
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const item = {
+      id: data.id,
+      title: data.title || data.name,
+      poster_path: `${imageURL}${data.poster_path}`,
+      media_type: params.explore,
+      release_date: data.release_date || data.first_air_date,
+      vote_average: data.vote_average,
+    };
+  
+    try {
+      await updateDoc(userRef, {
+        wishlist: isInList ? arrayRemove(item) : arrayUnion(item),
+      });
+      setInList(!isInList);
+      toast.success(`${isInList ? "Removed from" : "Added to"} Wishlist!`, {
+        position: "top-center",
+        theme: "dark",
+        autoClose: 1200,
+        hideProgressBar: true,
+      });
+    } catch (error) {
+      toast.error(`Failed to ${isInList ? "remove from" : "add to"} Wishlist.`, {
+        position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+        hideProgressBar: true,
+      });
+      console.error("Error updating wishlist:", error);
     }
   };
+  
 
   const handlePlayBtn = async ()=>{
     

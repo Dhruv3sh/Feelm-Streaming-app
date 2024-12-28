@@ -3,7 +3,6 @@ import {createSlice } from "@reduxjs/toolkit";
  const initialState ={
     bannerData : [],
     imageURL : '',
-    userDetails: null,
     
  }
 
@@ -16,9 +15,6 @@ import {createSlice } from "@reduxjs/toolkit";
         },
         setImageURL : (state,action) =>{
             state.imageURL = action.payload
-        },
-        setUserDetails: (state, action) => {
-            state.userDetails = action.payload; // Set user details
         },
     }
  })
