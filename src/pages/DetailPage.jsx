@@ -12,8 +12,7 @@ import {
   doc,
   updateDoc,
   arrayUnion,
-  getDoc,
-  arrayRemove,
+  getDoc
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { MdPlaylistAdd } from "react-icons/md";
@@ -59,7 +58,9 @@ const DetailPage = () => {
 
         if (userData) {
           setInWishlist(userData.wishlist?.some((item) => item.id === data.id));
-          setInCurrentWatchList(userData.CurrentlyWatching?.some((item) => item.id === data.id))
+          setInCurrentWatchList(
+            userData.CurrentlyWatching?.some((item) => item.id === data.id)
+          );
         }
       }
     };
@@ -67,22 +68,13 @@ const DetailPage = () => {
     fetchUserLists();
   }, [data?.id]);
 
-  const handleAddOrRemoveWishlist = async (isInList, setInList) => {
+  // Add to Wishlist
+  const handleAddToWishlist = async () => {
     if (!auth.currentUser) {
-      toast.warning("Please log in to modify your list.");
+      toast.warning("Please log in to add to your wishlist.");
       return;
     }
-  
-    if (!data || !data.id) {
-      toast.error("Invalid item data. Unable to update wishlist.", {
-        position: "top-center",
-        theme: "dark",
-        autoClose: 1200,
-        hideProgressBar: true,
-      });
-      return;
-    }
-  
+
     const userRef = doc(db, "users", auth.currentUser.uid);
     const item = {
       id: data.id,
@@ -92,32 +84,75 @@ const DetailPage = () => {
       release_date: data.release_date || data.first_air_date,
       vote_average: data.vote_average,
     };
-  
+
     try {
       await updateDoc(userRef, {
-        wishlist: isInList ? arrayRemove(item) : arrayUnion(item),
+        wishlist: arrayUnion(item),
       });
-      setInList(!isInList);
-      toast.success(`${isInList ? "Removed from" : "Added to"} Wishlist!`, {
+      setInWishlist(true);
+      toast.success("Added to Wishlist!", {
         position: "top-center",
         theme: "dark",
         autoClose: 1200,
-        hideProgressBar: true,
       });
     } catch (error) {
-      toast.error(`Failed to ${isInList ? "remove from" : "add to"} Wishlist.`, {
+      toast.error("Failed to add to Wishlist.", {
         position: "top-center",
-        autoClose: 1200,
         theme: "dark",
-        hideProgressBar: true,
+        autoClose: 1200,
       });
-      console.error("Error updating wishlist:", error);
+      console.error("Error adding to wishlist:", error);
     }
   };
-  
 
-  const handlePlayBtn = async ()=>{
-    
+  // Remove from Wishlist
+  const handleRemoveFromWishlist = async (event) => {
+    event.stopPropagation(); // Prevent event propagation
+    if (!auth.currentUser) {
+      toast.warning("Please log in to access your wishlist.");
+      return;
+    }
+    const userRef = doc(db, "users", auth.currentUser.uid);
+
+    try {
+      // Fetch the current wishlist
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const wishlist = userData?.wishlist || [];
+
+        // Filter out the item to be removed
+        const updatedList = wishlist.filter(
+          (item) => item.id !== data.id
+        );
+
+        // Update the wishlist list in Firestore
+        await updateDoc(userRef, {
+          wishlist: updatedList,
+        });
+        setInWishlist(false);
+        toast.success("Removed from Wishlist!", {
+        position: "top-center",
+        theme: "dark",
+        autoClose: 1200,
+      });
+      } else {
+        toast.error("item does not exist in db", {
+          position: "top-center",
+          theme: "dark",
+          autoClose: 1200,
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to remove from Wishlist.", {
+            position: "top-center",
+            theme: "dark",
+            autoClose: 1200,
+          });
+    }
+  };
+
+  const handlePlayBtn = async () => {
     if (auth.currentUser) {
       const userRef = doc(db, "users", auth.currentUser.uid);
       const item = {
@@ -128,19 +163,19 @@ const DetailPage = () => {
         release_date: data.release_date || data.first_air_date,
         vote_average: data.vote_average,
       };
-  
+
       try {
         // Fetch the current list
         const userSnapshot = await getDoc(userRef);
         if (userSnapshot.exists()) {
           const userData = userSnapshot.data();
           const currentlyWatching = userData?.CurrentlyWatching || [];
-  
+
           // Check if the item is already in the list
           const isInList = currentlyWatching.some(
             (currentItem) => currentItem.id === item.id
           );
-  
+
           if (!isInList) {
             // Add to Currently Watching if not in the list
             await updateDoc(userRef, {
@@ -150,7 +185,7 @@ const DetailPage = () => {
           } else {
             console.log("Already in Currently Watching list");
           }
-  
+
           // Navigate to the player regardless of the list status
           Navigate(`/player/${params?.explore}/${data?.id}`);
         } else {
@@ -170,7 +205,7 @@ const DetailPage = () => {
   }, [params.id]);
 
   return (
-    <div >
+    <div>
       <div className="w-full h-[360px] relative">
         <div className="h-full w-full">
           {!isLoaded && <Loading />}
@@ -213,25 +248,25 @@ const DetailPage = () => {
             >
               Play now
             </button>
-            <button
-              onClick={() =>
-                handleAddOrRemoveWishlist(inWishlist, setInWishlist)
-              }
-              className="pl-2 pt-4 text-white rounded relative active:scale-95 group"
-            >
-              {inWishlist ? (
+            {inWishlist ? (
+              <button
+                onClick={handleRemoveFromWishlist}
+                className="pl-2 pt-4 text-white rounded relative active:scale-95 group"
+              >
                 <MdPlaylistAddCheck size={34} />
-              ) : (
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToWishlist}
+                className="pl-2 pt-4 text-white rounded relative active:scale-95 group"
+              >
                 <MdPlaylistAdd size={34} />
-              )}             
-              <span className=" w-20 absolute top-[-2rem] left-[-1rem] bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                {inWishlist ? "Remove from list" : (<p className=" pt-1 h-6">Add To List</p>)}
-              </span>
-            </button>
+              </button>
+            )}
           </div>
         </div>
 
-        <div>         
+        <div>
           <h2 className=" text-2xl md:text-3xl lg:text-4xl font-bold text-white pt-2 pb-2">
             {data?.title || data?.name}
           </h2>
@@ -240,7 +275,7 @@ const DetailPage = () => {
             <p>
               <b>Rating :</b> {Number(data?.vote_average).toFixed(1)}
             </p>
-            
+
             <span>|</span>
             <p>
               <b>Views : </b>
@@ -253,27 +288,27 @@ const DetailPage = () => {
             </p>
           </div>
           <div className="flex w-full justify-center">
-          <button
-            className=" hidden bg-white w-80 h-10 px-4 py-4 text-black font-bold rounded mt-1 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md transition-all max-md:px-1 max-md:py-1 max-md:block "
-            onClick={handlePlayBtn}
-          >
-            Play now
-          </button>
             <button
-              onClick={() =>
-                handleAddOrRemoveWishlist(inWishlist, setInWishlist)
-              }
-              className="pl-4 pt-1 text-white rounded relative active:scale-95 hidden max-md:block"
+              className=" hidden bg-white w-80 h-10 px-4 py-4 text-black font-bold rounded mt-1 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md transition-all max-md:px-1 max-md:py-1 max-md:block "
+              onClick={handlePlayBtn}
             >
-              {inWishlist ? (
-                <FaCheck size={24} />
-              ) : (
-                <FaPlus size={24} />
-              )}
-              <p className="w-10 absolute text-[12px] bottom-[-5px] left-[10px] opacity-70">
-                My list
-              </p>             
+              Play now
             </button>
+            {inWishlist ? (
+              <button
+                onClick={handleRemoveFromWishlist}
+                className="pl-4 pt-1 text-white rounded relative active:scale-95 hidden max-md:block"
+              >
+                <FaCheck size={24} />
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToWishlist}
+                className="pl-4 pt-1 text-white rounded relative active:scale-95 hidden max-md:block"
+              >
+                <FaPlus size={24} />
+              </button>
+            )}
           </div>
           <div>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
@@ -371,9 +406,7 @@ const DetailPage = () => {
           <CardRow data={recommendedData} heading={`Recommended `} />
         </div>
       )}
-      <div className="bg-zinc-950 h-1">
-
-      </div>
+      <div className="bg-zinc-950 h-1"></div>
     </div>
   );
 };
