@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
-import { useSelector } from "react-redux";
 import moment from "moment/moment";
 import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
@@ -23,7 +22,6 @@ import { FaPlus } from "react-icons/fa6";
 const DetailPage = () => {
   const Navigate = useNavigate();
   const params = useParams();
-  const imageURL = useSelector((state) => state.FeelmData.imageURL);
   const { data } = useFetchDetail(`/${params?.explore}/${params?.id}`);
   const { data: similarData } = useFetch(
     `/${params?.explore}/${params?.id}/similar`
@@ -79,7 +77,7 @@ const DetailPage = () => {
     const item = {
       id: data.id,
       title: data.title || data.name,
-      poster_path: `${imageURL}${data.poster_path}`,
+      poster_path: `${data.poster_path}`,
       media_type: params.explore,
       release_date: data.release_date || data.first_air_date,
       vote_average: data.vote_average,
@@ -158,7 +156,7 @@ const DetailPage = () => {
       const item = {
         id: data.id,
         title: data.title || data.name,
-        poster_path: `${imageURL}${data.poster_path}`,
+        poster_path: `${data.poster_path}`,
         media_type: params.explore,
         release_date: data.release_date || data.first_air_date,
         vote_average: data.vote_average,
@@ -209,9 +207,9 @@ const DetailPage = () => {
       <div className="w-full h-[360px] relative">
         <div className="h-full w-full">
           {!isLoaded && <Loading />}
-          {imageURL ? (
+          {data ? (
             <img
-              src={imageURL + data?.backdrop_path || data?.poster_path}
+              src={'https://image.tmdb.org/t/p/w1280' + data?.backdrop_path || data?.poster_path}
               onLoad={handleImageLoad}
               alt="banner"
               className={`h-full w-full object-cover transition-all duration-400 ease-in-out ${
@@ -229,7 +227,7 @@ const DetailPage = () => {
         <div className=" relative mx-auto md:mx-0 md:-mt-24 lg:-mt-36 w-64 min-w-60 max-lg:min-w-52 hidden md:block">
           {data?.poster_path ? (
             <img
-              src={imageURL + data?.poster_path}
+              src={'https://image.tmdb.org/t/p/w1280' + data?.poster_path}
               alt="banner"
               className=" mih-h-80 object-cover rounded-md"
             />
@@ -353,7 +351,7 @@ const DetailPage = () => {
               ?.filter((image) => image?.profile_path)
               .map((starCast, index) => {
                 return (
-                  <div key={imageURL + index}>
+                  <div key={index}>
                     <div>
                       {/* Skeleton loader while the image is loading */}
                       {!isProfileLoaded && (
@@ -362,10 +360,9 @@ const DetailPage = () => {
                         </div>
                       )}
 
-                      {/* Image rendering if profile_path is available */}
-                      {imageURL || starCast?.profile_path ? (
+                      {starCast?.profile_path ? (
                         <img
-                          src={imageURL + starCast.profile_path}
+                          src={'https://image.tmdb.org/t/p/w300' + starCast.profile_path}
                           onLoad={handleProfileLoaded}
                           alt="Profile"
                           className={`w-20 h-20 object-cover rounded-full transition-opacity duration-300  ${
@@ -373,7 +370,7 @@ const DetailPage = () => {
                           }`}
                         />
                       ) : (
-                        // Fallback Skeleton loader if profile_path is not available
+                        //Skeleton loader if profile_path is not available
                         <div>
                           <Skeleton className="rounded-full w-20 h-20" />
                         </div>

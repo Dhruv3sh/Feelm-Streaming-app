@@ -6,7 +6,6 @@ import Loading from './Loading';
 
 const Banner = () => {
     const bannerData = useSelector(state => state.FeelmData.bannerData)
-    const imageURL = useSelector(state => state.FeelmData.imageURL)
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentImage, setCurrentImage] = useState(0)
     const [timer, setTimer] = useState(null);
@@ -50,7 +49,7 @@ const Banner = () => {
         return <Loading />;
     }
 
-    return (imageURL ?
+    return (bannerData ?
         <section >
             <div className='flex min-h-full max-h-[98vh] overflow-hidden'>
                 {
@@ -60,7 +59,7 @@ const Banner = () => {
                                 <div className='w-full h-full'>
                                     {!isLoaded && <Loading />}
                                     {data?.backdrop_path && <img
-                                        src={imageURL + data?.backdrop_path}
+                                        src={'https://image.tmdb.org/t/p/original' + data?.backdrop_path}
                                         onLoad={handleImageLoad}
                                         className={`h-full w-full object-cover transition-all duration-700 ease-in-out ${isLoaded ? ' opacity-100' : ' opacity-0'} `}
                                         alt='images'

@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
-import Loader from "../components/Loader"; // Import your loader component
 
 const Search = () => {
   const location = useLocation();
@@ -80,9 +79,9 @@ const Search = () => {
           className="rounded-full w-full px-4 py-1 bg-neutral-300 text-black"
         />
       </div>
-      <div>    
-        <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
-          {data.length > 0 ? (      
+      <div>
+        <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(140px,1fr))]">
+          {data.length > 0 ? (
             data.map((searchData, index) => (
               <Card
                 data={searchData}
@@ -98,7 +97,9 @@ const Search = () => {
         </div>
         {loading && (
           <div className="col-span-5 flex justify-center items-center pt-8">
-            <Loader />
+            <div className="flex justify-center items-center pt-3">
+              <div className="animate-spinner-linear-spin rounded-full h-10 w-10 border-t-3 border-blue-500 border-solid"></div>
+            </div>
           </div>
         )}
       </div>

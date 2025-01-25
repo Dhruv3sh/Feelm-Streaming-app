@@ -8,7 +8,7 @@ import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
 
 const Player = () => {
-  const { playerId, explore } = useParams();
+  const { playerId, explore, params } = useParams();
   const { data } = useFetchDetail(`/${explore}/${playerId}`);
   const { data: castData } = useFetchDetail(`/${explore}/${playerId}/credits`);
   const movieurl = `https://vidsrc.xyz/embed/${explore}/${playerId}`;
@@ -111,12 +111,24 @@ const Player = () => {
           </div>
         </div>
       </div>
-      <CardRow
-        data={similarData}
-        heading="More Like This"
-        media_type={explore}
-      />
-      <CardRow data={recommendedData} heading="Recommended" />
+      {similarData.length === 0 ? (
+        <div style={{ display: "none" }}></div>
+      ) : (
+        <div>
+          <CardRow
+            data={similarData}
+            heading={`Similar`}
+            media_type={params?.explore}
+          />
+        </div>
+      )}
+      {recommendedData.length === 0 ? (
+        <div style={{ display: "none" }}></div>
+      ) : (
+        <div>
+          <CardRow data={recommendedData} heading={`Recommended `} />
+        </div>
+      )}
       <div className="bg-zinc-950 h-1"></div>
     </div>
   );

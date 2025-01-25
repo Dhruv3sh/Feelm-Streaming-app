@@ -2,7 +2,6 @@ import {createSlice } from "@reduxjs/toolkit";
 
  const initialState ={
     bannerData : [],
-    imageURL : '',
     
  }
 
@@ -13,13 +12,10 @@ import {createSlice } from "@reduxjs/toolkit";
         setBannerData : (state,action)=>{
             state.bannerData = action.payload
         },
-        setImageURL : (state,action) =>{
-            state.imageURL = action.payload
-        },
     }
  })
  
 
- export const {setBannerData, setImageURL, setUserDetails } = FeelmSlice.actions
+ export const {setBannerData } = FeelmSlice.actions
 
  export default FeelmSlice.reducer

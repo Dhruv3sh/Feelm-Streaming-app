@@ -5,7 +5,7 @@ import MobileNavigation from "./components/MobileNavigation";
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setBannerData, setImageURL } from "./store/FeelmSlice";
+import { setBannerData } from "./store/FeelmSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { listenToAuthChanges } from "./store/authSlice";
@@ -20,24 +20,15 @@ function App() {
   const fetchTrendingData = async () => {
     try {
       const response = await axios.get("trending/all/week");
-
       dispatch(setBannerData(response.data.results));
     } catch (err) {
       console.log(err);
     }
   };
 
-  const fetchConfiguration = async () => {
-    try {
-      const response = await axios.get("/configuration");
-
-      dispatch(setImageURL(response.data.images.secure_base_url + "original"));
-    } catch (error) {}
-  };
 
   useEffect(() => {
     fetchTrendingData();
-    fetchConfiguration();
   }, []);
 
 

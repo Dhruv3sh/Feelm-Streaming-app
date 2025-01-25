@@ -7,17 +7,9 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../components/Firebase"; // Update this path based on your setup
 
 const Card = ({ data, trending, Dots, index, media_type }) => {
-    const imageURL = useSelector(state => state.FeelmData.imageURL);
     const [isLoaded, setIsLoaded] = useState(false);
     const { user } = useSelector((state)=> state.auth);
 
-    const handleImageLoad = () => {
-        setIsLoaded(true);
-    };
-
-    const handleImageError = () => {
-        setIsLoaded(true); // Update to true to stop showing LoadingImg even on error
-    };
 
     const mediaType = data.media_type ?? media_type;
 
@@ -55,15 +47,16 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
     }
 
     return (
-        <div className=' box-border min-w-[145px] max-w-[180px] min-h-[210px] overflow-hidden block rounded-lg relative hover:scale-[1.01] duration-200 max-md:min-w-[140px] max-md:min-h-[220px] max-sm:max-w-[130px] max-sm:min-w-[90px] max-sm:min-h-[120px] '>
+        <div>
             {!isLoaded && <LoadingImg />}
+            <div className=' box-border min-w-[145px] max-w-[180px] min-h-[210px] overflow-hidden block rounded-lg relative hover:scale-[1.01] duration-200 max-md:min-w-[140px] max-md:min-h-[220px] max-sm:max-w-[130px] max-sm:min-w-[90px] max-sm:min-h-[120px] '  style={{ display: isLoaded ? "block" : "none" }}>
+            
             {data?.poster_path && (
                 <Link to={`/${mediaType}/${data.id}`}>
                     <img
-                        src={imageURL + data?.poster_path}
+                        src={'https://image.tmdb.org/t/p/w342' + data?.poster_path}
                         alt='poster'
-                        onLoad={handleImageLoad}
-                        onError={handleImageError}
+                        onLoad={()=> setIsLoaded(true)}
                         className={`transition-all duration-700 ease-in-out ${isLoaded ? ' opacity-100' : ' opacity-0'}`}
                     />
                 </Link>
@@ -85,6 +78,8 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
                 )}
             </div>
         </div>
+        </div>
+        
     );
 };
 
