@@ -128,7 +128,7 @@ const Header = () => {
               
               <DropdownItem key="profile" className="gap-1">
                 <Link to='Profile'>
-                My Profile
+                Profile
                 </Link>
               </DropdownItem>
           

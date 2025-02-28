@@ -30,17 +30,15 @@ export default function Home() {
       // Show toast message
       toast.success("Registered Successfully!", {
         position: "top-center",
-        autoClose: 2000,
+        autoClose: 1200,
         theme: "dark",
-        hideProgressBar: true,
       });
       localStorage.removeItem("redirectedFromSignup");
     } else if (redirectedFromLogin) {
       toast.success("Loged in Successfully!", {
         position: "top-center",
-        autoClose: 2000,
+        autoClose: 1200,
         theme: "dark",
-        hideProgressBar: true,
       });
       localStorage.removeItem("redirectedFromLogin");
     }
@@ -52,9 +50,8 @@ export default function Home() {
     if (redirectedFromProfile) {
       toast.success("Loged out Successfully!", {
         position: "top-center",
-        autoClose: 2000,
+        autoClose: 1200,
         theme: "dark",
-        hideProgressBar: true,
       });
       localStorage.removeItem("redirectedFromProfile");
     }
