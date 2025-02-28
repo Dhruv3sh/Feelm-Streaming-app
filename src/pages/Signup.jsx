@@ -36,8 +36,6 @@ const Signup = () => {
     return validatePassword(password) ? false : true;
   }, [password]);
 
-  console.log(isPasswordInvalid);
-
   const handleRegister = async (e) => {
     e.preventDefault();
     dispatch(setLoading(true));
