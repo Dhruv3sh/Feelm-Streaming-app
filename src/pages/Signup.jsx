@@ -28,61 +28,73 @@ const Signup = () => {
     return validateEmail(email) ? false : true;
   }, [email]);
 
-  const validatePassword = (password) =>
-    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,16}$/);
+  const validatePassword = (password) => password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,16}$/);
+ 
   const isPasswordInvalid = useMemo(() => {
     if (password === "") return false;
-
+    
     return validatePassword(password) ? false : true;
   }, [password]);
+
+  console.log(isPasswordInvalid);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     dispatch(setLoading(true));
 
-    try {
-      // Create user with Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      // Save user details to Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        Name: name,
-      });
-
-      // Update Redux store with user info
-      dispatch(setUser({ uid: user.uid, email: user.email, name }));
-      toast.success("User Registered Successfully!!", {
+    if(isPasswordInvalid === false){
+      try {
+        // Create user with Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+  
+        // Save user details to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          Name: name,
+        });
+  
+        // Update Redux store with user info
+        dispatch(setUser({ uid: user.uid, email: user.email, name }));
+        toast.success("User Registered Successfully!!", {
+          position: "top-center",
+          autoClose: 1200,
+          theme: "dark",
+          hideProgressBar: true
+        });
+  
+        // Redirect to profile page
+        localStorage.setItem("redirectedFromSignup", "true");
+        window.location.href = "/";
+  
+        // Clear form fields
+        setName("");
+        setEmail("");
+        setPassword("");
+      } catch (error) {
+        // Handle error
+        dispatch(setError(error.message));
+        toast.error(error.message.split("auth/")[1].split(")")[0].replace(/-/g, " "), {
+          position: "top-center",
+          autoClose: 1200,
+          theme: "dark",
+        });
+      } finally {
+        dispatch(setLoading(false));
+      }
+    }else{
+      toast.error('Enter password properly', {
         position: "top-center",
         autoClose: 1200,
         theme: "dark",
-        hideProgressBar: true
       });
-
-      // Redirect to profile page
-      localStorage.setItem("redirectedFromSignup", "true");
-      window.location.href = "/";
-
-      // Clear form fields
-      setName("");
-      setEmail("");
-      setPassword("");
-    } catch (error) {
-      // Handle error
-      dispatch(setError(error.message));
-      toast.error(error.message.split("auth/")[1].split(")")[0].replace(/-/g, " "), {
-        position: "top-center",
-        autoClose: 1200,
-        theme: "dark",
-      });
-    } finally {
       dispatch(setLoading(false));
     }
+    
   };
 
 
