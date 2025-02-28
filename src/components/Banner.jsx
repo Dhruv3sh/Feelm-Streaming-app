@@ -59,7 +59,7 @@ const Banner = () => {
                                 <div className='w-full h-full'>
                                     {!isLoaded && <Loading />}
                                     {data?.backdrop_path && <img
-                                        src={'https://image.tmdb.org/t/p/original' + data?.backdrop_path}
+                                        src={'https://image.tmdb.org/t/p/w1280' + data?.backdrop_path}
                                         onLoad={handleImageLoad}
                                         className={`h-full w-full object-cover transition-all duration-700 ease-in-out ${isLoaded ? ' opacity-100' : ' opacity-0'} `}
                                         alt='images'
