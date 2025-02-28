@@ -135,7 +135,7 @@ const DetailPage = () => {
         autoClose: 1200,
       });
       } else {
-        toast.error("item does not exist in db", {
+        toast.error("item does not exist", {
           position: "top-center",
           theme: "dark",
           autoClose: 1200,
@@ -160,7 +160,7 @@ const DetailPage = () => {
         media_type: params.explore,
         release_date: data.release_date || data.first_air_date,
         vote_average: data.vote_average,
-      };
+      }
 
       try {
         // Fetch the current list
@@ -192,6 +192,12 @@ const DetailPage = () => {
       } catch (error) {
         console.error("Error updating Currently Watching:", error);
       }
+    } else {
+      toast.error("Login or signup to Play now", {
+        position: "top-center",
+        theme: "dark",
+        autoClose: 1200,
+      });
     }
   };
 
