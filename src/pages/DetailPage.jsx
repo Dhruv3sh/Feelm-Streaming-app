@@ -47,15 +47,16 @@ const DetailPage = () => {
 
   const duration = (data?.runtime / 60).toFixed(1).split(".");
 
+  //fetch userlist
   useEffect(() => {
     const fetchUserLists = async () => {
-      if (auth.currentUser) {
-        const userRef = doc(db, "users", auth.currentUser.uid);
+      if (auth?.currentUser) {
+        const userRef = doc(db, "users", auth?.currentUser?.uid);
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
 
         if (userData) {
-          setInWishlist(userData.wishlist?.some((item) => item.id === data.id));
+          setInWishlist(userData?.wishlist?.some((item) => item.id === data.id));
           setInCurrentWatchList(
             userData.CurrentlyWatching?.some((item) => item.id === data.id)
           );
@@ -69,7 +70,12 @@ const DetailPage = () => {
   // Add to Wishlist
   const handleAddToWishlist = async () => {
     if (!auth.currentUser) {
-      toast.warning("Please log in to add to your wishlist.");
+      toast.dismiss();
+      toast.warning("Please log in to add to your wishlist.",{
+        position: "top-center",
+        theme: "dark",
+        autoClose: 1200,
+      });
       return;
     }
 
@@ -88,12 +94,14 @@ const DetailPage = () => {
         wishlist: arrayUnion(item),
       });
       setInWishlist(true);
+      toast.dismiss();
       toast.success("Added to Wishlist!", {
         position: "top-center",
         theme: "dark",
         autoClose: 1200,
       });
     } catch (error) {
+      toast.dismiss();
       toast.error("Failed to add to Wishlist.", {
         position: "top-center",
         theme: "dark",
@@ -107,7 +115,12 @@ const DetailPage = () => {
   const handleRemoveFromWishlist = async (event) => {
     event.stopPropagation(); // Prevent event propagation
     if (!auth.currentUser) {
-      toast.warning("Please log in to access your wishlist.");
+      toast.dismiss();
+      toast.warning("Please log in to access your wishlist.",{
+        position: "top-center",
+        theme: "dark",
+        autoClose: 1200,
+      });
       return;
     }
     const userRef = doc(db, "users", auth.currentUser.uid);
@@ -129,6 +142,7 @@ const DetailPage = () => {
           wishlist: updatedList,
         });
         setInWishlist(false);
+        toast.dismiss();
         toast.success("Removed from Wishlist!", {
         position: "top-center",
         theme: "dark",
@@ -142,6 +156,7 @@ const DetailPage = () => {
         });
       }
     } catch (error) {
+      toast.dismiss();
       toast.error("Failed to remove from Wishlist.", {
             position: "top-center",
             theme: "dark",
@@ -150,6 +165,7 @@ const DetailPage = () => {
     }
   };
 
+  //play button
   const handlePlayBtn = async () => {
     if (auth.currentUser) {
       const userRef = doc(db, "users", auth.currentUser.uid);
@@ -179,12 +195,9 @@ const DetailPage = () => {
             await updateDoc(userRef, {
               CurrentlyWatching: arrayUnion(item),
             });
-            console.log("Added to Currently Watching");
-          } else {
-            console.log("Already in Currently Watching list");
           }
 
-          // Navigate to the player regardless of the list status
+          // Navigate to the player
           Navigate(`/player/${params?.explore}/${data?.id}`);
         } else {
           console.error("User document does not exist");
@@ -193,7 +206,8 @@ const DetailPage = () => {
         console.error("Error updating Currently Watching:", error);
       }
     } else {
-      toast.error("Login or signup to Play now", {
+      toast.dismiss();
+      toast.warning("Login or signup to Play now", {
         position: "top-center",
         theme: "dark",
         autoClose: 1200,
@@ -209,7 +223,7 @@ const DetailPage = () => {
   }, [params.id]);
 
   return (
-    <div>
+    <>
       <div className="w-full h-[360px] relative">
         <div className="h-full w-full">
           {!isLoaded && <Loading />}
@@ -285,12 +299,18 @@ const DetailPage = () => {
               <b>Views : </b>
               {Number(data?.vote_count)}
             </p>
-            <span>|</span>
+            
+            {params?.explore === 'movie' ? 
+            <><span>|</span>
             <p>
               <b>Duration : </b>
-              {duration[0]}h {duration[1]}m
-            </p>
+              {duration?.[0]}h {duration?.[1]}m
+            </p></>
+             : ''}
+            
           </div>
+
+          {/* For mobile view */}
           <div className="flex w-full justify-center">
             <button
               className=" hidden bg-white w-80 h-10 px-4 py-4 text-black font-bold rounded mt-1 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md transition-all max-md:px-1 max-md:py-1 max-md:block "
@@ -324,7 +344,7 @@ const DetailPage = () => {
                 <b>Genre:</b>
               </h4>
               <p> {data?.genres?.[0]?.name}</p>
-              <span>|</span>
+              <span className={`${data?.genres?.[1]?.name === undefined ? 'hidden' : 'inline'}`}>|</span>
               <p>{data?.genres?.[1]?.name}</p>
             </div>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
@@ -340,7 +360,7 @@ const DetailPage = () => {
               </p>
             </div>
           </div>
-          <div>
+          <div className={`${castData?.crew?.length === 0 ? 'hidden' : 'block'}`}>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
             <p>
               <span>Director</span> :{" "}
@@ -349,9 +369,12 @@ const DetailPage = () => {
                 castData?.crew?.find((member) => member.job === "Producer")
                   ?.name}
             </p>
-            <p className=" border-b-1 border-neutral-800 my-2 "></p>
+            
           </div>
+          <div className={`${castData?.cast?.length === 0 ? 'hidden' : 'block'}`}>
+          <p className=" border-b-1 border-neutral-800 my-2 "></p>
           <h2 className=" font-bold text-lg">Cast : </h2>
+          </div>
           <div className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 ">
             {castData?.cast
               ?.filter((image) => image?.profile_path)
@@ -371,7 +394,7 @@ const DetailPage = () => {
                           src={'https://image.tmdb.org/t/p/w300' + starCast.profile_path}
                           onLoad={handleProfileLoaded}
                           alt="Profile"
-                          className={`w-20 h-20 object-cover rounded-full transition-opacity duration-300  ${
+                          className={` mx-auto w-20 h-20 object-cover rounded-full transition-opacity duration-300  ${
                             isProfileLoaded ? "opacity-100" : "opacity-0"
                           }`}
                         />
@@ -382,7 +405,7 @@ const DetailPage = () => {
                         </div>
                       )}
                     </div>
-                    <p className=" font-thin text-sm text-center lg:pr-6">
+                    <p className=" font-thin text-sm text-center">
                       {starCast?.name}
                     </p>
                   </div>
@@ -410,7 +433,7 @@ const DetailPage = () => {
         </div>
       )}
       <div className="bg-zinc-950 h-1"></div>
-    </div>
+    </>
   );
 };
 
