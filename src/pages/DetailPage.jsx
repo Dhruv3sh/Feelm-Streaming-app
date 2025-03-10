@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
 import moment from "moment/moment";
@@ -35,13 +35,13 @@ const DetailPage = () => {
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
 
-  const handleImageLoad = () => {
+  const handleImageLoad = useCallback(() => {
     setIsLoaded(true);
-  };
+  },[]);
 
-  const handleProfileLoaded = () => {
+  const handleProfileLoaded = useCallback(() => {
     setIsProfileLoaded(true);
-  };
+  },[]);
 
   const duration = (data?.runtime / 60).toFixed(1).split(".");
 
@@ -240,20 +240,25 @@ const DetailPage = () => {
           ) : (
             <Loading />
           )}
-            <DotLottieReact
+          <DotLottieReact
             className="absolute top-1/2 left-[39%] sm:left-[48%] h-[3.5rem] w-[6.2rem] z-20 hover:cursor-pointer"
-              src="https://lottie.host/2fec7c05-8d01-4b7a-b39e-b2ce52b993f8/PGKNafYbKq.lottie"
-              loop
-              autoplay
-              onClick={() => setShowTrailer(true)}
-            />
-            <span className="absolute top-[63%] left-[40%] sm:left-[48%] sm:pl-2 " >Watch Trailer</span>
+            src="https://lottie.host/2fec7c05-8d01-4b7a-b39e-b2ce52b993f8/PGKNafYbKq.lottie"
+            loop
+            autoplay
+            onClick={() => setShowTrailer(true)}
+          />
+          <span className="absolute top-[63%] left-[40%] sm:left-[48%] sm:pl-2 ">
+            Watch Trailer
+          </span>
         </div>
-        <TrailerComponent
-          showTrailer={showTrailer}
-          setShowTrailer={setShowTrailer}
-          movieTitle={data?.title || data?.name}
-        />
+        {showTrailer && (
+          <TrailerComponent
+            showTrailer={showTrailer}
+            setShowTrailer={setShowTrailer}
+            movieTitle={data?.title || data?.name}
+          />
+        )}
+
         <div className=" absolute w-full h-full top-0 bg-gradient-to-t from-zinc-950/100 to-transparent"></div>
       </div>
       <div className=" px-4 py-1 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-8">
