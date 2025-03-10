@@ -21,7 +21,7 @@ const Banner = () => {
         // Start a new interval
         const newTimer = setInterval(() => {
             setCurrentImage((prevImage) => (prevImage < bannerData.length - 1 ? prevImage + 1 : 0));
-        }, 4000);
+        }, 5000);
         setTimer(newTimer); // Save the new interval
     };
 
@@ -39,7 +39,7 @@ const Banner = () => {
         
         const initialTimer = setInterval(() => {
             setCurrentImage((prevImage) => (prevImage < bannerData.length - 1 ? prevImage + 1 : 0));
-        }, 4000);
+        }, 5000);
         setTimer(initialTimer); 
         
         return () => clearInterval(initialTimer);
