@@ -80,7 +80,7 @@ const TrailerComponent = ({ showTrailer, setShowTrailer, movieTitle }) => {
             onClick={() => setShowTrailer(false)}
           >
             <iframe
-              className="relative w-full h-[50%] md:h-[70%] lg:h-[80%] xl:h-[90%]"
+              className="relative w-full h-[50%] md:h-[70%] lg:h-[80%] xl:h-[90%] transition-all "
               src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
               title="YouTube video player"
               allow="autoplay; encrypted-media"

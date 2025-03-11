@@ -5,7 +5,7 @@ const Modal = ({ children, modal, setModal,visibility }) => {
     <>
       <div
         onClick={() => setModal(false)}
-        className={`bg-black/95 fixed inset-0 z-40
+        className={`bg-black/85 fixed inset-0 z-40
       ${
         modal ? `visible opacity-${visibility}` : "invisible opacity-0"
       } transition-all duration-200`}
