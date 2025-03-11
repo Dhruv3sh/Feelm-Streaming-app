@@ -52,7 +52,7 @@ const useFetch = (endpoint, firebaseFetch = false, user = null, collection = "wi
     };
 
     fetchData();
-  }, [endpoint, firebaseFetch, user, collection]);
+  }, [firebaseFetch, user, collection]);
 
   return { data, loading, error };
 };
