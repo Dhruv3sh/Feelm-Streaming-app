@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 export default function Home() {
   const { user } = useSelector((state) => state.auth);
-  const trendingData = useSelector((state) => state.FeelmData.bannerData);
+  const {data: trendingMovie} = useFetch("/trending/all/week")
   const { data: nowPlayingData } = useFetch("/movie/now_playing");
   const { data: topRatedData } = useFetch("/movie/top_rated");
   const { data: topRatedTv } = useFetch("/tv/top_rated");
@@ -60,8 +60,8 @@ export default function Home() {
   return (
     <div className="tracking-[0.5px] ">
 
-      <Banner />
-      <CardRow data={trendingData} heading={"Trending Now"} trending={true} />
+      <Banner trendingMovie={trendingMovie}/>
+      <CardRow data={trendingMovie} heading={"Trending Now"} trending={true} />
       {user && CurrentlyWatchingData.length > 0 && (
         <CardRow
           data={CurrentlyWatchingData}
