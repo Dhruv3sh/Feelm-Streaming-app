@@ -17,6 +17,7 @@
     "bootstrap": "^5.3.3",
     "firebase": "^10.13.1",
     "framer-motion": "^11.3.24",
+    "keen-slider": "^6.8.6",
     "moment": "^2.30.1",
     "npm": "^11.2.0",
     "react": "^18.3.1",
