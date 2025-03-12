@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
@@ -14,8 +14,7 @@ export default function Home() {
     nowPlaying,
     topRatedMovies,
     topRatedTv,
-    popularTv,
-    loading,
+    popularTv
   } = useSelector((state) => state.MoviesAndShows);
   const { data: wishlistData } = useFetch(true, user, "wishlist");
   const { data: CurrentlyWatchingData } = useFetch(
