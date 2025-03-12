@@ -1,60 +1,38 @@
 import { useEffect, useState } from "react";
-
-import axios from "axios";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../components/Firebase";
 
-const useFetch = (endpoint, firebaseFetch = false, user = null, collection = "wishlist") => {
+const useFetch = (firebaseFetch = false, user = null, collection = "wishlist") => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
+    if (!firebaseFetch || !user) {
+      setData([]);
+      setLoading(false);
+      return;
+    }
 
-      if (firebaseFetch) {
-        if (user) {
-          const userRef = doc(db, "users", user.uid);
-          const unsubscribe = onSnapshot(
-            userRef,
-            (docSnapshot) => {
-              if (docSnapshot.exists()) {
-                const userData = docSnapshot.data();
-                setData(userData?.[collection] || []);
-              } else {
-                setData([]);
-              }
-              setLoading(false);
-            },
-            (error) => {
-              console.error(`Error fetching Firebase ${collection} data:`, error);
-              setError(`Failed to fetch ${collection} data from Firebase.`);
-              setLoading(false);
-            }
-          );
-          return () => unsubscribe(); // Cleanup
-        } else {
-          setData([]);
-          setLoading(false);
-        }
-      } else if (endpoint) {
-        try {
-          const response = await axios.get(endpoint);
-          setData(response?.data?.results || []);
-        } catch (error) {
-          console.error("Error fetching API data:", error);
-          setError("Failed to fetch data.");
-        }
+    setLoading(true);
+    const userRef = doc(db, "users", user.uid);
+
+    const unsubscribe = onSnapshot(
+      userRef,
+      (docSnapshot) => {
+        const newData = docSnapshot.exists() ? docSnapshot.data()?.[collection] || [] : [];
+        setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev : newData));
+        setLoading(false);
+      },
+      (error) => {
+        console.error(`Error fetching ${collection} data:`, error);
         setLoading(false);
       }
-    };
+    );
 
-    fetchData();
-  }, [firebaseFetch, user, collection]);
+    return () => unsubscribe(); // Cleanup on unmount or dependency change
+  }, [firebaseFetch, user?.uid, collection]);
 
-  return { data, loading, error };
+  return { data, loading };
 };
 
 export default useFetch;
