@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
 import "keen-slider/keen-slider.min.css";
@@ -56,7 +56,6 @@ const Banner = ({ trendingMovie }) => {
               className="keen-slider__slide min-w-full min-h-[450px] lg:min-h-full overflow-hidden relative"
             >
               <div className="w-full h-full">
-                {!isLoaded && <Loading />}
                 {data?.backdrop_path && (
                   <img
                     src={
@@ -102,4 +101,4 @@ const Banner = ({ trendingMovie }) => {
   );
 };
 
-export default Banner;
+export default memo(Banner);
