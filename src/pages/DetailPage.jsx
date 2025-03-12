@@ -15,25 +15,31 @@ import { FaCheck } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
 import TrailerComponent from "../components/TrailerComponent";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { fetchRecommendations } from "../store/dataSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const DetailPage = () => {
   const Navigate = useNavigate();
-  const params = useParams();
-  const { data } = useFetchDetail(`/${params?.explore}/${params?.id}`);
-  const { data: similarData } = useFetch(
-    `/${params?.explore}/${params?.id}/similar`
-  );
-  const { data: recommendedData } = useFetch(
-    `/${params?.explore}/${params?.id}/recommendations`
+  const { explore, id } = useParams();
+  const { data } = useFetchDetail(`/${explore}/${id}`);
+  const dispatch = useDispatch();
+  const { recommended,similar } = useSelector(
+    (state) => state.MoviesAndShows
   );
   const { data: castData } = useFetchDetail(
-    `/${params?.explore}/${params?.id}/credits`
+    `/${explore}/${id}/credits`
   );
   const [isLoaded, setIsLoaded] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  
+  useEffect(() => {
+    if (explore && id) {
+      dispatch(fetchRecommendations({ explore, id }));
+    }
+  }, [dispatch, explore, id]);
 
   const handleImageLoad = useCallback(() => {
     setIsLoaded(true);
@@ -84,7 +90,7 @@ const DetailPage = () => {
       id: data.id,
       title: data.title || data.name,
       poster_path: `${data.poster_path}`,
-      media_type: params.explore,
+      media_type: explore,
       release_date: data.release_date || data.first_air_date,
       vote_average: data.vote_average,
     };
@@ -171,7 +177,7 @@ const DetailPage = () => {
         id: data.id,
         title: data.title || data.name,
         poster_path: `${data.poster_path}`,
-        media_type: params.explore,
+        media_type: explore,
         release_date: data.release_date || data.first_air_date,
         vote_average: data.vote_average,
       };
@@ -196,7 +202,7 @@ const DetailPage = () => {
           }
 
           // Navigate to the player
-          Navigate(`/player/${params?.explore}/${data?.id}`);
+          Navigate(`/player/${explore}/${id}`);
         } else {
           console.error("User document does not exist");
         }
@@ -218,7 +224,7 @@ const DetailPage = () => {
       top: 0,
       behavior: "smooth",
     });
-  }, [params.id]);
+  }, [id]);
 
   return (
     <>
@@ -232,7 +238,7 @@ const DetailPage = () => {
                 data?.poster_path
               }
               onLoad={handleImageLoad}
-              alt="banner"
+              alt="poster"
               className={`h-full w-full object-cover transition-all duration-400 ease-in-out ${
                 isLoaded ? " opacity-100" : " opacity-0"
               }`}
@@ -265,7 +271,7 @@ const DetailPage = () => {
         <div className=" relative mx-auto md:mx-0 md:-mt-24 lg:-mt-36 w-64 min-w-60 max-lg:min-w-52 hidden md:block">
           {data?.poster_path ? (
             <img
-              src={"https://image.tmdb.org/t/p/w1280" + data?.poster_path}
+              src={"https://image.tmdb.org/t/p/w300" + data?.poster_path}
               alt="banner"
               className=" mih-h-80 object-cover rounded-md"
             />
@@ -321,7 +327,7 @@ const DetailPage = () => {
               {Number(data?.vote_count)}
             </p>
 
-            {params?.explore === "movie" ? (
+            {explore === "movie" ? (
               <>
                 <span>|</span>
                 <p>
@@ -450,22 +456,22 @@ const DetailPage = () => {
           </div>
         </div>
       </div>
-      {similarData.length === 0 ? (
+      {similar.length === 0 ? (
         <div style={{ display: "none" }}></div>
       ) : (
         <div>
           <CardRow
-            data={similarData}
+            data={similar}
             heading={`Similar`}
-            media_type={params?.explore}
+            media_type={explore}
           />
         </div>
       )}
-      {recommendedData.length === 0 ? (
+      {recommended.length === 0 ? (
         <div style={{ display: "none" }}></div>
       ) : (
         <div>
-          <CardRow data={recommendedData} heading={`Recommended `} />
+          <CardRow data={recommended} heading={`Recommended `} />
         </div>
       )}
       <div className="bg-zinc-950 h-1"></div>
