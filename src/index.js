@@ -17,7 +17,6 @@ axios.defaults.headers.common[
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
   <NextUIProvider>
     <main className="dark text-foreground bg-zinc-950">
       <Provider store={store}>
@@ -25,5 +24,4 @@ root.render(
       </Provider>
     </main>
   </NextUIProvider>
-  // </React.StrictMode>
 );

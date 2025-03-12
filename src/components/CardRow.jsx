@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { memo, useRef } from 'react'
 import Card from './Card'
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
@@ -24,6 +24,7 @@ const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
                         data.map((data, index) => (
                             <Card
                                 key={data.id + 'heading' + index}
+                                className='hover:scale-105'
                                 data={data}
                                 index={index + 1}
                                 trending={trending}
@@ -46,4 +47,4 @@ const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
     )
 }
 
-export default CardRow
+export default memo(CardRow);
