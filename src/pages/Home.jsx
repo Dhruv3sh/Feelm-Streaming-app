@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
 import { toast } from "react-toastify";
+import { fetchMoviesAndShows } from "../store/dataSlice";
 
 export default function Home() {
   const { user } = useSelector((state) => state.auth);
-  const {data: trendingMovie} = useFetch("/trending/all/week")
-  const { data: nowPlayingData } = useFetch("/movie/now_playing");
-  const { data: topRatedData } = useFetch("/movie/top_rated");
-  const { data: topRatedTv } = useFetch("/tv/top_rated");
-  const { data: popularTv } = useFetch("/tv/popular");
-  const { data: wishlistData } = useFetch("", true, user, "wishlist");
+  const dispatch = useDispatch();
+  const {
+    trending,
+    nowPlaying,
+    topRatedMovies,
+    topRatedTv,
+    popularTv,
+    loading,
+  } = useSelector((state) => state.MoviesAndShows);
+  const { data: wishlistData } = useFetch(true, user, "wishlist");
   const { data: CurrentlyWatchingData } = useFetch(
-    "",
     true,
     user,
     "CurrentlyWatching"
   );
+
+  useEffect(() => {
+    if (!trending.length) {
+      dispatch(fetchMoviesAndShows());
+    }
+  }, [dispatch, trending.length]);
 
   useEffect(() => {
     const redirectedFromSignup =
@@ -59,9 +69,7 @@ export default function Home() {
 
   return (
     <div className="tracking-[0.5px] ">
-
-      <Banner trendingMovie={trendingMovie}/>
-      <CardRow data={trendingMovie} heading={"Trending Now"} trending={true} />
+      <Banner trendingMovie={trending} />
       {user && CurrentlyWatchingData.length > 0 && (
         <CardRow
           data={CurrentlyWatchingData}
@@ -70,14 +78,21 @@ export default function Home() {
           Dots={true}
         />
       )}
+      {user && wishlistData && wishlistData.length > 0 && (
+        <CardRow
+          data={wishlistData}
+          heading={"Your Wishlist"}
+          media_type={"movie"}
+        />
+      )}
+      <CardRow data={trending} heading={"Trending Now"} trending={true} />
       <CardRow
-        data={nowPlayingData}
+        data={nowPlaying}
         heading={"Now Playing In Theaters"}
         media_type={"movie"}
       />
-
       <CardRow
-        data={topRatedData}
+        data={topRatedMovies}
         heading={"Top Rated Movies"}
         media_type={"movie"}
       />
@@ -86,13 +101,6 @@ export default function Home() {
         heading={"Top Rated TV Shows"}
         media_type={"tv"}
       />
-      {user && wishlistData && wishlistData.length > 0 && (
-        <CardRow
-          data={wishlistData}
-          heading={"Your Wishlist"}
-          media_type={"movie"}
-        />
-      )}
       <CardRow
         data={popularTv}
         heading={"Popular TV Shows"}
