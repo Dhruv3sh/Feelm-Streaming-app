@@ -80,7 +80,7 @@ const Search = () => {
         />
       </div>
       <div>
-        <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
+        <div className="m-1 mt-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(11rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,auto))]">
           {data.length > 0 ? (
             data.map((searchData, index) => (
               <Card

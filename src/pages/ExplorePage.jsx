@@ -88,7 +88,7 @@ const ExplorePage = () => {
         </h3>
 
         {params.explore === "movie" ? (
-          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(140px,1fr))]">
+          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
             {movieData.map((exploreData, index) => (
               <Card
                 data={exploreData}
@@ -98,7 +98,7 @@ const ExplorePage = () => {
             ))}
           </div>
         ) : (
-          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(140px,1fr))]">
+          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
             {tvData.map((exploreData, index) => (
               <Card
                 data={exploreData}
