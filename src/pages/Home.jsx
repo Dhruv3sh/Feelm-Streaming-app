@@ -5,6 +5,7 @@ import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
 import { toast } from "react-toastify";
 import { fetchMoviesAndShows } from "../store/dataSlice";
+import Loading from "../components/Loading";
 
 export default function Home() {
   const { user } = useSelector((state) => state.auth);
@@ -14,7 +15,8 @@ export default function Home() {
     nowPlaying,
     topRatedMovies,
     topRatedTv,
-    popularTv
+    popularTv,
+    loading
   } = useSelector((state) => state.MoviesAndShows);
   const { data: wishlistData } = useFetch(true, user, "wishlist");
   const { data: CurrentlyWatchingData } = useFetch(
@@ -24,7 +26,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    if (!trending.length) {
+    if (trending.length===0) {
       dispatch(fetchMoviesAndShows());
     }
   }, [dispatch, trending.length]);
@@ -68,7 +70,7 @@ export default function Home() {
 
   return (
     <div className="tracking-[0.5px] ">
-      <Banner trendingMovie={trending} />
+      {loading ? <Loading/> : <Banner trendingMovie={trending} />}
       {user && CurrentlyWatchingData.length > 0 && (
         <CardRow
           data={CurrentlyWatchingData}
