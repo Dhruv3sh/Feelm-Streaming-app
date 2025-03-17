@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
 import moment from "moment/moment";
-import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
 import Loading from "../components/Loading";
 import { Card, Skeleton } from "@nextui-org/react";
@@ -40,14 +39,6 @@ const DetailPage = () => {
       dispatch(fetchRecommendations({ explore, id }));
     }
   }, [dispatch, explore, id]);
-
-  const handleImageLoad = useCallback(() => {
-    setIsLoaded(true);
-  },[]);
-
-  const handleProfileLoaded = useCallback(() => {
-    setIsProfileLoaded(true);
-  },[]);
 
   const duration = (data?.runtime / 60).toFixed(1).split(".");
 
@@ -237,9 +228,9 @@ const DetailPage = () => {
                 "https://image.tmdb.org/t/p/w1280" + data?.backdrop_path ||
                 data?.poster_path
               }
-              onLoad={handleImageLoad}
+              onLoad={()=>setIsLoaded(true)}
               alt="poster"
-              className={`h-full w-full object-cover transition-all duration-400 ease-in-out ${
+              className={`h-full w-full object-cover transition-all ease-in-out ${
                 isLoaded ? " opacity-100" : " opacity-0"
               }`}
             />
@@ -272,13 +263,16 @@ const DetailPage = () => {
           {data?.poster_path ? (
             <img
               src={"https://image.tmdb.org/t/p/w300" + data?.poster_path}
+              onLoad={() => setIsProfileLoaded(true)}
               alt="banner"
-              className=" mih-h-80 object-cover rounded-md"
+              className={`mih-h-80 object-cover transition-opacity duration-300 rounded-md ease-in-out ${
+                isProfileLoaded ? " opacity-100" : " opacity-0"
+              }`}
             />
           ) : (
             <Card className="w-[240px] " radius="sm">
               <Skeleton className="rounded-sm">
-                <div className=" h-[360px] rounded-lg bg-default-300"></div>
+                <div className=" h-[360px] rounded-lg transition-all bg-default-300"></div>
               </Skeleton>
             </Card>
           )}
@@ -434,7 +428,7 @@ const DetailPage = () => {
                             "https://image.tmdb.org/t/p/w300" +
                             starCast.profile_path
                           }
-                          onLoad={handleProfileLoaded}
+                          onLoad={()=>setIsProfileLoaded(true)}
                           alt="Profile"
                           className={` mx-auto w-20 h-20 object-cover rounded-full transition-opacity duration-300  ${
                             isProfileLoaded ? "opacity-100" : "opacity-0"
