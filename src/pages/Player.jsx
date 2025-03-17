@@ -1,40 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
 import { PiDotOutlineFill } from "react-icons/pi";
 import moment from "moment";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import useFetch from "../hooks/useFetch";
 import CardRow from "../components/CardRow";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRecommendations } from "../store/dataSlice";
 
 const Player = () => {
-  const { playerId, explore, params } = useParams();
-  const { data } = useFetchDetail(`/${explore}/${playerId}`);
-  const { data: castData } = useFetchDetail(`/${explore}/${playerId}/credits`);
-  const movieurl = `https://vidsrc.xyz/embed/${explore}/${playerId}`;
-  const { data: similarData } = useFetch(`/${explore}/${playerId}/similar`);
-  const { data: recommendedData } = useFetch(
-    `/${explore}/${playerId}/recommendations`
-  );
+  const { explore, id } = useParams();
+  const { data } = useFetchDetail(`/${explore}/${id}`);
+  const { data: castData } = useFetchDetail(`/${explore}/${id}/credits`);
+  const movieurl = `https://vidsrc.xyz/embed/${explore}/${id}`;
+  const dispatch = useDispatch();
+  const { recommended, similar } = useSelector((state) => state.MoviesAndShows);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   useEffect(() => {
-    const preventRedirection = (event) => {
-      if (event.target.tagName === "IFRAME") {
-        event.preventDefault();
-      }
-    };
+    if (explore && id) {
+      dispatch(fetchRecommendations({ explore, id }));
+    }
+  }, [explore, id, dispatch]);
 
-    document.addEventListener("click", preventRedirection);
-
-    return () => {
-      document.removeEventListener("click", preventRedirection);
-    };
-  }, []);
+  const toggleExpand = useCallback(() => {
+    setIsExpanded(!isExpanded);
+  }, [isExpanded]);
 
   return (
     <div className=" w-full pt-16">
@@ -111,22 +102,21 @@ const Player = () => {
           </div>
         </div>
       </div>
-      {similarData.length === 0 ? (
+      {(similar && similar.length === 0) ? (
+        <div style={{ display: "none" }}></div>
+      ) : (
+        <div>
+          <CardRow data={similar} heading={`Similar`} media_type={explore} />
+        </div>
+      )}
+      {recommended.length === 0 ? (
         <div style={{ display: "none" }}></div>
       ) : (
         <div>
           <CardRow
-            data={similarData}
-            heading={`Similar`}
-            media_type={params?.explore}
+            data={recommended}
+            heading={`Recommended `}
           />
-        </div>
-      )}
-      {recommendedData.length === 0 ? (
-        <div style={{ display: "none" }}></div>
-      ) : (
-        <div>
-          <CardRow data={recommendedData} heading={`Recommended `} />
         </div>
       )}
       <div className="bg-zinc-950 h-1"></div>
