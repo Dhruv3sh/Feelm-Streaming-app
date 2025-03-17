@@ -55,7 +55,7 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
         }`}
       >
         {!isLoaded && (
-          <div className=" absolute inset-0 duration-100 bg-default-300">
+          <div className=" absolute inset-0 duration-100 transition-all bg-default-300">
             <LoadingImg />
           </div>
         )}
