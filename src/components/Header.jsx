@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link, NavLink } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
-import { navigation } from "../contants/Navigation";
+import { navigation } from "../constants/Navigation";
 import { ImUser } from "react-icons/im";
 import {
   Avatar,

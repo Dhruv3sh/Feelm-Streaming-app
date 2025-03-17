@@ -1,5 +1,5 @@
 import React from 'react'
-import { mobileNavigation } from '../contants/Navigation'
+import { mobileNavigation } from '../constants/Navigation'
 import { NavLink } from 'react-router-dom'
 
 const MobileNavigation = () => {
