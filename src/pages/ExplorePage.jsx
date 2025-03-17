@@ -81,14 +81,14 @@ const ExplorePage = () => {
     <div className="py-16 min-h-screen">
       <div>
         <h3
-          className="capitalize text-lg lg:text-xl font-semibold my-3 max-sm:ml-2 max-lg:ml-9 lg:ml-5
+          className="capitalize text-lg lg:text-xl font-semibold mx-1 my-2 md:mx-2 md:my-3
         "
         >
           Popular {params.explore}
         </h3>
 
         {params.explore === "movie" ? (
-          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
+          <div className="m-1 md:m-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-x-2 gap-y-3 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
             {movieData.map((exploreData, index) => (
               <Card
                 data={exploreData}

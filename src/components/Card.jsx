@@ -50,7 +50,7 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
   return (
     <>
       <div
-        className={`min-w-[6rem] max-w-[6rem] sm:min-w-[7rem] md:min-w-[9rem] lg:min-w-[11rem] xl:min-w-[12rem] overflow-hidden rounded-lg relative transition-all ${
+        className={`min-w-[6rem] max-w-[6rem] sm:min-w-[7rem] md:min-w-[9rem] lg:min-w-[11rem] overflow-hidden rounded-lg relative transition-all ${
           isLoaded ? "block" : "none"
         }`}
       >
