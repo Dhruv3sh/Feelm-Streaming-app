@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useFetch from "../hooks/useFetch";
-import Card from "../components/Card";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function MyList() {
   const { user } = useSelector((state) => state.auth);
@@ -33,15 +33,22 @@ function MyList() {
           </div>
         ) : delayedData?.length > 0 ? (
           // Show wishlist if data exists
-          <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(11rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,auto))]">
-            {delayedData.map((elem, index) => (
-              <Card
-                data={elem}
-                key={elem.id + index}
-                heading={"Your Wishlist"}
-                media_type={"movie"}
-              />
-            ))}
+          <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-1 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(10rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(11rem,auto))]">
+            {delayedData.map((elem, index) => {
+              const imgPath =
+              elem?.poster_path || elem?.backdrop_path;
+              if (!imgPath) return null;
+              return (
+                <Link to={`/${elem?.media_type}/${elem?.id}`} key={index}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w342${imgPath}`}
+                    alt="poster"
+                    className={`hover:scale-[1.01] transition-all duration-200 ease-in-out "
+                    }`}
+                  />
+                </Link>
+              );
+            })}
           </div>
         ) : (
           // Show empty list message if no data

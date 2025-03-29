@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Card from "../components/Card";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Search = () => {
   const location = useLocation();
@@ -80,15 +79,26 @@ const Search = () => {
         />
       </div>
       <div>
-        <div className="m-1 mt-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(11rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(12rem,auto))]">
+        <div className="m-1 mt-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-1 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(10rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(11rem,auto))]">
           {data.length > 0 ? (
-            data.map((searchData, index) => (
-              <Card
-                data={searchData}
-                key={searchData.id + "search" + index}
-                media_type={searchData.media_type}
-              />
-            ))
+            data.map((searchData, index) => {
+              const imgPath =
+                searchData?.poster_path || searchData?.backdrop_path;
+              if (!imgPath) return null;
+              return (
+                <Link
+                  to={`/${searchData?.media_type}/${searchData?.id}`}
+                  key={index}
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w342${imgPath}`}
+                    alt="poster"
+                    className={`hover:scale-[1.01] transition-all duration-200 ease-in-out "
+                                }`}
+                  />
+                </Link>
+              );
+            })
           ) : !loading ? (
             <div className=" w-full flex justify-center col-span-5 sm:col-span-9 pt-16 text-2xl max-sm:text-base ">
               <p>Search Here your favourite movie or show...</p>

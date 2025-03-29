@@ -84,7 +84,7 @@ const ExplorePage = () => {
         </h3>
 
         {params.explore === "movie" ? (
-          <div className="m-1 md:m-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-[0.4rem] sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
+          <div className="m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-1 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(10rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(11rem,auto))]">
             {movieData?.map((exploreData, index) => {
               const imgPath =
                 exploreData?.poster_path || exploreData?.backdrop_path;
@@ -102,7 +102,7 @@ const ExplorePage = () => {
             })}
           </div>
         ) : (
-          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
+          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-1 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
             {tvData?.map((exploreData, index) => {
               const imgPath =
                 exploreData?.poster_path || exploreData?.backdrop_path;
