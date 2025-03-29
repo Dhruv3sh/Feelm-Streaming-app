@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Card from "../components/Card";
+import { Link, useParams } from "react-router-dom";
 
 const ExplorePage = () => {
   const params = useParams();
@@ -80,32 +79,45 @@ const ExplorePage = () => {
   return (
     <div className="py-16 min-h-screen">
       <div>
-        <h3
-          className="capitalize text-lg lg:text-xl font-semibold mx-1 my-2 md:mx-2 md:my-3
-        "
-        >
+        <h3 className="capitalize text-lg lg:text-xl font-semibold mx-1 my-2 md:mx-2 md:my-3">
           Popular {params.explore}
         </h3>
 
         {params.explore === "movie" ? (
-          <div className="m-1 md:m-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-x-2 gap-y-3 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
-            {movieData.map((exploreData, index) => (
-              <Card
-                data={exploreData}
-                key={exploreData.id + "exploreSEction" + index}
-                media_type={params.explore}
-              />
-            ))}
+          <div className="m-1 md:m-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-[0.4rem] sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
+            {movieData?.map((exploreData, index) => {
+              const imgPath =
+                exploreData?.poster_path || exploreData?.backdrop_path;
+              if (!imgPath) return null;
+              return (
+                <Link to={`/movie/${exploreData?.id}`} key={index}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w342${imgPath}`}
+                    alt="poster"
+                    className={`hover:scale-[1.01] transition-all duration-200 ease-in-out"
+                    `}
+                  />
+                </Link>
+              );
+            })}
           </div>
         ) : (
-          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
-            {tvData.map((exploreData, index) => (
-              <Card
-                data={exploreData}
-                key={exploreData.id + "exploreSEction" + index}
-                media_type={params.explore}
-              />
-            ))}
+          <div className=" m-1 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] md:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
+            {tvData?.map((exploreData, index) => {
+              const imgPath =
+                exploreData?.poster_path || exploreData?.backdrop_path;
+              if (!imgPath) return null;
+              return (
+                <Link to={`/tv/${exploreData?.id}`} key={index}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w342${imgPath}`}
+                    alt="poster"
+                    className={`hover:scale-[1.01] transition-all duration-200 ease-in-out "
+                    }`}
+                  />
+                </Link>
+              );
+            })}
           </div>
         )}
 
