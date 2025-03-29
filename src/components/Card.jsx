@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import LoadingImg from "./LoadingImg";
 import { RxCross2 } from "react-icons/rx";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../components/Firebase"; // Update this path based on your setup
+import { db } from "../components/Firebase";
 
 const Card = ({ data, trending, Dots, index, media_type }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -28,13 +28,10 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
         const updatedList = currentlyWatching.filter(
           (item) => item.id !== data.id
         );
-
         // Update the CurrentlyWatching list in Firestore
         await updateDoc(userRef, {
           CurrentlyWatching: updatedList,
         });
-
-        console.log("Movie removed from Currently Watching");
       } else {
         console.error("User document does not exist");
       }
@@ -47,6 +44,7 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
     return null;
   }
 
+  console.log(data)
   return (
     <>
       <div

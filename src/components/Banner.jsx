@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
 import "keen-slider/keen-slider.min.css";

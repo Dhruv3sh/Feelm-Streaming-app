@@ -21,6 +21,7 @@ const DetailPage = () => {
   const Navigate = useNavigate();
   const { explore, id } = useParams();
   const { data } = useFetchDetail(`/${explore}/${id}`);
+  const { data1 } = useFetchDetail(`/${explore}/${id}/season/${"1"}`);
   const dispatch = useDispatch();
   const { recommended,similar } = useSelector(
     (state) => state.MoviesAndShows
@@ -33,6 +34,9 @@ const DetailPage = () => {
   const [inWishlist, setInWishlist] = useState(false);
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+
+  console.log(data)
+  console.log(data1);
   
   useEffect(() => {
     if (explore && id) {
@@ -265,7 +269,7 @@ const DetailPage = () => {
               src={"https://image.tmdb.org/t/p/w300" + data?.poster_path}
               onLoad={() => setIsProfileLoaded(true)}
               alt="banner"
-              className={`mih-h-80 object-cover transition-opacity duration-300 rounded-md ease-in-out ${
+              className={`mih-h-80 object-cover transition-opacity rounded-md ease-in-out ${
                 isProfileLoaded ? " opacity-100" : " opacity-0"
               }`}
             />

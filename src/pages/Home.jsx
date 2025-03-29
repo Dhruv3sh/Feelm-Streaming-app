@@ -67,6 +67,7 @@ export default function Home() {
       localStorage.removeItem("redirectedFromProfile");
     }
   }, []);
+  console.log(CurrentlyWatchingData)
 
   return (
     <div className="tracking-[0.5px] ">
