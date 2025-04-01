@@ -9,7 +9,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useSelector } from "react-redux";
 
 const Header = () => {
@@ -18,7 +18,7 @@ const Header = () => {
   const [inputValue, setInputValue] = useState(removeSpace);
   const [navbar, setNavbar] = useState(false);
   const navigate = useNavigate();
-  const { user, profileData } = useSelector((state)=> state.auth);
+  const { user, profileData } = useSelector((state) => state.auth);
 
   const handleButtonClick = () => {
     navigate("/search");
@@ -70,7 +70,7 @@ const Header = () => {
       <div className=" px-2 flex items-center h-full w-full">
         <Link to={"/"}>
           <img
-            className="h-16 w-24 max-md:w-24 max-md:h-14 hover:scale-105 transition-all active:scale-90"
+            className="h-16 w-24 max-md:w-24 max-md:h-14 3xl:h-24 3xl:w-24 hover:scale-105 transition-all active:scale-90"
             src="/images/logo.png"
             alt="logo"
           />
@@ -93,7 +93,7 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="flex ml-auto gap-7">
+        <div className=" absolute right-1 flex gap-7 ">
           <form
             className="flex items-center relative pr-5"
             onSubmit={handleSubmit}
@@ -114,58 +114,60 @@ const Header = () => {
           </form>
 
           {user ? (
-        <div className="dropdrown">
-          <Dropdown placement="bottom-end" className=" bg-black text-white max-w-[130px] min-w-28">
-            <DropdownTrigger >
-              <Avatar
-                as="button"
-                className="transition-transform "
-                src={profileData?.profileImageUrl || '/images/default.png'}
-              />
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="light" className="max-w-[130px] min-w-28
-            ">
-              
-              <DropdownItem key="profile" className="gap-1">
-                <Link to='Profile'>
-                Profile
-                </Link>
-              </DropdownItem>
-          
-              <DropdownItem key="my_wishlist">
-                <Link to='MyList'>
-                My List
-                </Link>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-      ) : (
-        <div className="dropdrown">
-          <Dropdown placement="bottom-end" className=" bg-black text-white">
-            <DropdownTrigger>
-              <Avatar
-                as="button"
-                className="transition-transform "              
-              ><ImUser/></Avatar>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="orders" className="h-10 gap-2" isReadOnly>
-                <p>Welcome</p>
-                <p>To access account and List</p>
-              </DropdownItem>
-              <DropdownItem
-                key="profile"
-                className="h-10 gap-2 text-red-900 border-1 text-center "
-                href="/UserLogin"
-                color="danger"
+            <div className="dropdrown">
+              <Dropdown
+              closeOnSelect
+                placement="bottom-end"
+                className=" bg-black text-white max-w-[130px] min-w-28"
+                disableScrollLock
               >
-                <button>LOGIN / SIGNUP</button>
-              </DropdownItem>
+                <DropdownTrigger>
+                  <Avatar
+                    as="button"
+                    src={profileData?.profileImageUrl || "/images/default.png"}
+                  />
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Profile Actions"
+                  variant="light"
+                  className="max-w-[130px] min-w-28
+            "
+                >
+                  <DropdownItem key="profile" className="gap-1">
+                    <Link to="Profile">Profile</Link>
+                  </DropdownItem>
 
-            </DropdownMenu>
-          </Dropdown>
-        </div>)}
+                  <DropdownItem key="my_wishlist">
+                    <Link to="MyList">My List</Link>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          ) : (
+            <div className="dropdrown">
+              <Dropdown closeOnSelect placement="bottom-end" className=" bg-black text-white">
+                <DropdownTrigger>
+                  <Avatar as="button">
+                    <ImUser />
+                  </Avatar>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
+                  <DropdownItem key="orders" className="h-10 gap-2 text-white">
+                    <p>Welcome</p>
+                    <p>To access account and List</p>
+                  </DropdownItem>
+                  <DropdownItem
+                    key="profile"
+                    className="h-10 gap-2 text-red-900 border-1 text-center"
+                    href="./UserLogin"
+                    color="danger"
+                  >
+                    <Link to="/UserLogin">LOGIN / SIGNUP</Link>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          )}
         </div>
       </div>
     </header>
