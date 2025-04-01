@@ -22,7 +22,7 @@ function MyList() {
   return (
     <div className=" min-h-screen w-full pt-[70px] 3xl:pt-40">
       <div>
-        <h3 className="capitalize text-lg lg:text-xl font-semibold my-3 max-sm:ml-2 max-lg:ml-9 lg:ml-5">
+        <h3 className="capitalize text-lg lg:text-xl font-semibold mx-1 my-2 md:mx-2 md:my-3 3xl:mt-10">
           My WishList
         </h3>
         {loading ? (
