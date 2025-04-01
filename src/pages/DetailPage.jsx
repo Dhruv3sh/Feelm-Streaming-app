@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
 import moment from "moment/moment";
-import CardRow from "../components/CardRow";
+import CardRow from "../components/Cards/CardRow";
 import Loading from "../components/Loading";
-import { Card, Skeleton } from "@nextui-org/react";
+import { Card, Skeleton } from "@heroui/react";
 import { auth, db } from "../components/Firebase";
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
@@ -34,9 +34,6 @@ const DetailPage = () => {
   const [inWishlist, setInWishlist] = useState(false);
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-
-  console.log(data)
-  console.log(data1);
   
   useEffect(() => {
     if (explore && id) {
@@ -440,9 +437,9 @@ const DetailPage = () => {
                         />
                       ) : (
                         //Skeleton loader if profile_path is not available
-                        <div>
+                        (<div>
                           <Skeleton className="rounded-full w-20 h-20" />
-                        </div>
+                        </div>)
                       )}
                     </div>
                     <p className=" font-thin text-sm text-center">

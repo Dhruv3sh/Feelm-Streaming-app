@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import LoadingImg from "./LoadingImg";
+import LoadingImg from "../LoadingImg";
 import { RxCross2 } from "react-icons/rx";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../components/Firebase";
+import { db } from "../Firebase";
 
 const Card = ({ data, trending, Dots, index, media_type }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -44,7 +44,6 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
     return null;
   }
 
-  console.log(data)
   return (
     <>
       <div

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import ColumnCards from "../components/Cards/ColumnCards";
 
 const Search = () => {
   const location = useLocation();
@@ -68,7 +69,7 @@ const Search = () => {
   }, [handleScroll]);
 
   return (
-    <div className="bg-zinc-950 text-neutral-300 py-16 min-h-[100vh]">
+    <div className="bg-zinc-950 text-neutral-300 py-16 min-h-[100vh] 3xl:pt-40">
       <div className="lg:hidden mx-1 my-1">
         <input
           type="text"
@@ -79,31 +80,16 @@ const Search = () => {
         />
       </div>
       <div>
-        <div className="m-1 mt-2 grid grid-cols-[repeat(auto-fill,minmax(6rem,auto))] gap-1 sm:grid-cols-[repeat(auto-fill,minmax(7rem,auto))] md:grid-cols-[repeat(auto-fill,minmax(9rem,auto))] lg:grid-cols-[repeat(auto-fill,minmax(10rem,auto))] xl:grid-cols-[repeat(auto-fill,minmax(11rem,auto))]">
-          {data.length > 0 ? (
-            data.map((searchData, index) => {
-              const imgPath =
-                searchData?.poster_path || searchData?.backdrop_path;
-              if (!imgPath) return null;
-              return (
-                <Link
-                  to={`/${searchData?.media_type}/${searchData?.id}`}
-                  key={index}
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w342${imgPath}`}
-                    alt="poster"
-                    className={`hover:scale-[1.01] transition-all duration-200 ease-in-out "
-                                }`}
-                  />
-                </Link>
-              );
-            })
-          ) : !loading ? (
+          {query.length > 0 && data.length > 0 ? (
+            <ColumnCards data={data}/>
+          ) : !loading && query.length === 0 ? (
             <div className=" w-full flex justify-center col-span-5 sm:col-span-9 pt-16 text-2xl max-sm:text-base ">
               <p>Search Here your favourite movie or show...</p>
             </div>
-          ) : null}
+          ) : null }
+          {!loading && query.length > 0 && data.length === 0 ? <div className=" w-full flex justify-center col-span-5 sm:col-span-9 pt-16 text-2xl max-sm:text-base ">
+          <p>No Result Found...</p>
+        </div> : null }
         </div>
         {loading && (
           <div className="col-span-5 flex justify-center items-center pt-8">
@@ -113,7 +99,6 @@ const Search = () => {
           </div>
         )}
       </div>
-    </div>
   );
 };
 

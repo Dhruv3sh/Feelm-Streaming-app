@@ -2,7 +2,7 @@ import { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
-import CardRow from "../components/CardRow";
+import CardRow from "../components/Cards/CardRow";
 import { toast } from "react-toastify";
 import { fetchMoviesAndShows } from "../store/dataSlice";
 import Loading from "../components/Loading";
@@ -67,7 +67,6 @@ export default function Home() {
       localStorage.removeItem("redirectedFromProfile");
     }
   }, []);
-  console.log(CurrentlyWatchingData)
 
   return (
     <div className="tracking-[0.5px] ">
