@@ -4,7 +4,7 @@ import useFetchDetail from "../hooks/useFetchDetail";
 import { PiDotOutlineFill } from "react-icons/pi";
 import moment from "moment";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
-import CardRow from "../components/CardRow";
+import CardRow from "../components/Cards/CardRow";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRecommendations } from "../store/dataSlice";
 

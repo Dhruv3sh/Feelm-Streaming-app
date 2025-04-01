@@ -85,7 +85,7 @@ const ProfilePage = () => {
   const profileImage = profileData?.profileImageUrl || "/images/default.png";
 
   return (
-    <div className=" h-[696px] md:h-screen bg-[url('../public/images/hero.jpg')] bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
+    <div className=" h-[696px] md:h-screen bg-[url('../images/hero.jpg')] bg-cover bg-center flex items-center justify-center max-sm:flex-col gap-x-1 max-sm:gap-y-1 pt-10 max-sm:pt-16">
       <div className="h-[540px] w-80 max-sm:h-[450px] max-sm:w-[330px] bg-black opacity-85 relative">
         <div className="flex justify-center flex-col">
           <div className="w-full flex justify-center relative pt-6">

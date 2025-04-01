@@ -1,4 +1,4 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";

@@ -39,7 +39,7 @@ const TrailerComponent = ({ showTrailer, setShowTrailer, movieTitle }) => {
         const response = await fetch(
           `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
             movieTitle + " trailer"
-          )}&key=${process.env.REACT_APP_YOUTUBE_API_KEY}&type=video`
+          )}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}&type=video`
         );
 
         if (!response.ok) {
