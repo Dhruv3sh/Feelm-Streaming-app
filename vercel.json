@@ -1,8 +1,11 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/index.html" }
-    ],
-    "headers": [
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
     {
       "source": "/sitemap.xml",
       "headers": [
@@ -17,5 +20,4 @@
       ]
     }
   ]
-  }
-  
+}
