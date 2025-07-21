@@ -1,11 +1,13 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Banner from "../components/Banner";
 import useFetch from "../hooks/useFetch";
 import CardRow from "../components/Cards/CardRow";
 import { toast } from "react-toastify";
 import { fetchMoviesAndShows } from "../store/dataSlice";
-import Loading from "../components/Loading";
+import Loading from "../components/Loaders/Loading";
+import SkeletonCardRow from "../components/Loaders/SkeletonCardRow";
+import { Helmet } from "react-helmet";
 
 export default function Home() {
   const { user } = useSelector((state) => state.auth);
@@ -26,7 +28,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    if (trending.length===0) {
+    if (trending.length === 0) {
       dispatch(fetchMoviesAndShows());
     }
   }, [dispatch, trending.length]);
@@ -70,8 +72,25 @@ export default function Home() {
 
   return (
     <div className="tracking-[0.5px] ">
-      {loading ? <Loading/> : <Banner trendingMovie={trending} />}
-      {user && CurrentlyWatchingData.length > 0 && (
+
+      {/** ✅ SEO Helmet **/}
+      <Helmet>
+        <title>FeelmMovies | Stream Trending Movies & Shows</title>
+        <meta
+          name="description"
+          content="Watch trending movies, top-rated shows, and the latest releases on FeelmMovies. Enjoy your personalized wishlist and continue watching anytime."
+        />
+        <meta name="keywords" content="movies, tv shows, watch online, streaming, trending, top rated, feelm, feelmmovies" />
+        <meta property="og:title" content="Feelmmovies – Stream Trending Movies & Shows" />
+        <meta property="og:description" content="Watch trending movies, top-rated shows, and more on Feelmmovies – your personalized streaming experience." />
+        <meta property="og:url" content="https://feelmmovies.vercel.app/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://feelmmovies.vercel.app/images/logo.png" />
+        <link rel="canonical" href="https://feelmmovies.vercel.app/" />
+      </Helmet>
+      
+      {loading ? <Loading /> : <Banner trendingMovie={trending} />}
+      {user && CurrentlyWatchingData?.length > 0 && (
         <CardRow
           data={CurrentlyWatchingData}
           heading={"Continue Watching"}
@@ -79,34 +98,35 @@ export default function Home() {
           Dots={true}
         />
       )}
-      {user && wishlistData && wishlistData.length > 0 && (
+      {user && wishlistData?.length > 0 && (
         <CardRow
           data={wishlistData}
           heading={"Your Wishlist"}
           media_type={"movie"}
         />
       )}
-      <CardRow data={trending} heading={"Trending Now"} trending={true} />
-      <CardRow
+      {loading ? <SkeletonCardRow /> : <CardRow data={trending} heading={"Trending Now"} trending={true} />}
+      {loading ? <SkeletonCardRow /> : <CardRow
         data={nowPlaying}
         heading={"Now Playing In Theaters"}
         media_type={"movie"}
-      />
-      <CardRow
+      />}
+      {loading ? <SkeletonCardRow /> : <CardRow
         data={topRatedMovies}
         heading={"Top Rated Movies"}
         media_type={"movie"}
-      />
-      <CardRow
+      />}
+      {loading ? <SkeletonCardRow /> : <CardRow
         data={topRatedTv}
         heading={"Top Rated TV Shows"}
         media_type={"tv"}
-      />
-      <CardRow
+      />}
+      {loading ? <SkeletonCardRow /> : <CardRow
         data={popularTv}
         heading={"Popular TV Shows"}
         media_type={"tv"}
-      />
+      />}
+
       <div className="bg-zinc-950 h-1"></div>
     </div>
   );

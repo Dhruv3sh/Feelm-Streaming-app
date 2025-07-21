@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import LoadingImg from "../LoadingImg";
+import LoadingImg from "../Loaders/LoadingImg";
 import { RxCross2 } from "react-icons/rx";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase";
+import { Skeleton } from "@heroui/skeleton";
 
 const Card = ({ data, trending, Dots, index, media_type }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -51,14 +52,9 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
           isLoaded ? "block" : "none"
         }`}
       >
-        {!isLoaded && (
-          <div className=" absolute inset-0 duration-100 transition-all bg-default-300">
-            <LoadingImg />
-          </div>
-        )}
-
-          <Link to={`/${mediaType}/${data.id}`}>
-            <img
+          <Link to={`/${mediaType}/${data.id}`}  state={data}>
+          <Skeleton isLoaded={isLoaded}>
+          <img
               src={"https://image.tmdb.org/t/p/w342" + data?.poster_path}
               alt="poster"
               onLoad={() => setIsLoaded(true)}
@@ -66,6 +62,7 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
                 isLoaded ? " opacity-100" : " opacity-0"
               }`}
             />
+          </Skeleton>
           </Link>
         <div className="absolute top-3">
           {trending && (
@@ -89,4 +86,4 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
   );
 };
 
-export default Card;
+export default memo(Card);

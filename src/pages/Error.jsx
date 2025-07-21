@@ -1,19 +1,21 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
+import React from "react";
+import { Link, useRouteError } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const ErrorPage = () => {
+    const error = useRouteError();
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 text-center">
-        <img
+      <img
         src="/images/popcorn.png"
         alt="Popcorn"
         className="w-20 animate-bounce"
       />
-      <h1 className="text-7xl font-bold text-red-500 mb-4">404</h1>
+      <h1 className="text-7xl font-bold text-red-500 mb-4">{error.status}</h1>
       <h2 className="text-3xl font-semibold mb-2">Oops! Page Not Found</h2>
       <p className="text-gray-400 mb-6">
-        It seems you're lost in the world of movies. The page you're looking for doesn't exist.
+        It seems you're lost in the world of movies. The page you're looking for
+        doesn't exist.
       </p>
       <Link
         to="/"

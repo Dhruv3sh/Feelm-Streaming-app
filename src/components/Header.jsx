@@ -33,7 +33,7 @@ const Header = () => {
       if (inputValue) {
         navigate(`/search?q=${inputValue}`);
       }
-    }, 500); // Adjust debounce delay as needed
+    }, 700); // Adjust debounce delay as needed
 
     return () => {
       clearTimeout(handler);
@@ -67,7 +67,7 @@ const Header = () => {
         } fixed top-0 min-h-14 max-h-16 min-w-full z-40`}
     >
       <div className=" px-2 flex items-center h-full w-full">
-        <Link to={"/"}>
+        <Link to={'/'}>
           <img
             className="h-16 w-24 max-md:h-14 3xl:h-24 hover:scale-105 object-contain aspect-auto transition-all active:scale-90"
             src="/images/logo.png"
@@ -119,7 +119,6 @@ const Header = () => {
                 closeOnSelect
                 placement="bottom-end"
                 className=" bg-black text-white max-w-[130px] min-w-28"
-                disableScrollLock
               >
                 <DropdownTrigger>
                   <Avatar

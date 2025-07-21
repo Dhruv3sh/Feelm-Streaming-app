@@ -51,14 +51,17 @@ export const {
   setProfileError,
 } = authSlice.actions;
 
-// Async Thunks
+
+//** Async Thunks **//
+//** Fetch profile data for the logged-in user **//
+
 export const listenToAuthChanges = () => (dispatch) => {
   dispatch(setLoading(true));
   onAuthStateChanged(auth, async (currentUser) => {
     if (currentUser) {
       const { uid, email } = currentUser;
       dispatch(setUser({ uid, email }));
-      dispatch(fetchProfileData(uid)); // Fetch profile data for the logged-in user
+      dispatch(fetchProfileData(uid)); 
     } else {
       dispatch(logout());
     }

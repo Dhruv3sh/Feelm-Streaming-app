@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
 import moment from "moment/moment";
 import CardRow from "../components/Cards/CardRow";
-import Loading from "../components/Loading";
+import Loading from "../components/Loaders/Loading";
 import { Card, Skeleton } from "@heroui/react";
 import { auth, db } from "../components/Firebase";
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
@@ -19,12 +19,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 const DetailPage = () => {
   const Navigate = useNavigate();
+  const {state} = useLocation();
   const { explore, id } = useParams();
-  const { data } = useFetchDetail(`/${explore}/${id}`);
-  const { data1 } = useFetchDetail(`/${explore}/${id}/season/${"1"}`);
   const dispatch = useDispatch();
   const { recommended,similar } = useSelector(
     (state) => state.MoviesAndShows
+  );
+  const { data } = useFetchDetail(
+    `/${explore}/${id}`
   );
   const { data: castData } = useFetchDetail(
     `/${explore}/${id}/credits`
@@ -34,7 +36,7 @@ const DetailPage = () => {
   const [inWishlist, setInWishlist] = useState(false);
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-  
+
   useEffect(() => {
     if (explore && id) {
       dispatch(fetchRecommendations({ explore, id }));
@@ -42,7 +44,7 @@ const DetailPage = () => {
   }, [dispatch, explore, id]);
 
   const duration = (data?.runtime / 60).toFixed(1).split(".");
-
+  
   //fetch userlist
   useEffect(() => {
     const fetchUserLists = async () => {
@@ -53,17 +55,17 @@ const DetailPage = () => {
 
         if (userData) {
           setInWishlist(
-            userData?.wishlist?.some((item) => item.id === data.id)
+            userData?.wishlist?.some((item) => item?.id === state?.id)
           );
           setInCurrentWatchList(
-            userData.CurrentlyWatching?.some((item) => item.id === data.id)
+            userData.CurrentlyWatching?.some((item) => item?.id === state?.id)
           );
         }
       }
     };
 
     fetchUserLists();
-  }, [data?.id]);
+  }, [state?.id, inCurrentWatchList]);
 
   // Add to Wishlist
   const handleAddToWishlist = async () => {
@@ -79,12 +81,17 @@ const DetailPage = () => {
 
     const userRef = doc(db, "users", auth.currentUser.uid);
     const item = {
-      id: data.id,
-      title: data.title || data.name,
-      poster_path: `${data.poster_path}`,
+      id: state?.id,
+      title: state?.title || state?.name,
+      poster_path: `${state?.poster_path}`,
       media_type: explore,
-      release_date: data.release_date || data.first_air_date,
-      vote_average: data.vote_average,
+      release_date: state?.release_date || state?.first_air_date,
+      vote_average: state?.vote_average,
+      backdrop_path: state?.backdrop_path || state?.poster_path,
+      vote_count : state?.vote_count,
+      overview : state?.overview,
+      genres: data?.genres,
+      duration: `${duration?.[0]}h ${duration?.[1]}m`
     };
 
     try {
@@ -111,7 +118,7 @@ const DetailPage = () => {
 
   // Remove from Wishlist
   const handleRemoveFromWishlist = async (event) => {
-    event.stopPropagation(); // Prevent event propagation
+    event.stopPropagation();
     if (!auth.currentUser) {
       toast.dismiss();
       toast.warning("Please log in to access your wishlist.", {
@@ -131,7 +138,7 @@ const DetailPage = () => {
         const wishlist = userData?.wishlist || [];
 
         // Filter out the item to be removed
-        const updatedList = wishlist.filter((item) => item.id !== data.id);
+        const updatedList = wishlist.filter((item) => item.id !== state.id);
 
         // Update the wishlist list in Firestore
         await updateDoc(userRef, {
@@ -166,12 +173,17 @@ const DetailPage = () => {
     if (auth.currentUser) {
       const userRef = doc(db, "users", auth.currentUser.uid);
       const item = {
-        id: data.id,
-        title: data.title || data.name,
-        poster_path: `${data.poster_path}`,
+        id: state?.id,
+        title: state?.title || state?.name,
+        poster_path: `${state?.poster_path}`,
         media_type: explore,
-        release_date: data.release_date || data.first_air_date,
-        vote_average: data.vote_average,
+        release_date: state?.release_date || state?.first_air_date,
+        vote_average: state?.vote_average,
+        backdrop_path: state?.backdrop_path || state?.poster_path,
+        vote_count: state?.vote_count,
+        overview: state?.overview,
+        genres: data?.genres,
+        duration: `${duration?.[0]}h ${duration?.[1]}m`
       };
 
       try {
@@ -223,11 +235,11 @@ const DetailPage = () => {
       <div className="w-full h-[360px] relative">
         <div className="h-full w-full relative">
           {!isLoaded && <Loading />}
-          {data ? (
+          {state ? (
             <img
               src={
-                "https://image.tmdb.org/t/p/w1280" + data?.backdrop_path ||
-                data?.poster_path
+                "https://image.tmdb.org/t/p/w1280" + state?.backdrop_path ||
+                state?.poster_path
               }
               onLoad={()=>setIsLoaded(true)}
               alt="poster"
@@ -253,7 +265,7 @@ const DetailPage = () => {
           <TrailerComponent
             showTrailer={showTrailer}
             setShowTrailer={setShowTrailer}
-            movieTitle={data?.title || data?.name}
+            movieTitle={state?.title || state?.name}
           />
         )}
 
@@ -261,9 +273,9 @@ const DetailPage = () => {
       </div>
       <div className=" px-4 py-1 md:py-0 flex flex-col md:flex-row gap-5 lg:gap-8">
         <div className=" relative mx-auto md:mx-0 md:-mt-24 lg:-mt-36 w-64 min-w-60 max-lg:min-w-52 hidden md:block">
-          {data?.poster_path ? (
+          {state?.poster_path ? (
             <img
-              src={"https://image.tmdb.org/t/p/w300" + data?.poster_path}
+              src={"https://image.tmdb.org/t/p/w300" + state?.poster_path}
               onLoad={() => setIsProfileLoaded(true)}
               alt="banner"
               className={`mih-h-80 object-cover transition-opacity rounded-md ease-in-out ${
@@ -306,20 +318,20 @@ const DetailPage = () => {
         <div>
           <div className="flex gap-2 max-[320px]:text-center ">
             <h2 className=" text-2xl md:text-3xl lg:text-4xl font-bold text-white pt-2 pb-2">
-              {data?.title || data?.name}
+              {state?.title || state?.name}
             </h2>
           </div>
 
-          <p className=" capitalize text-neutral-400 ">{data?.tagline}</p>
+          <p className=" capitalize text-neutral-400 ">{state?.tagline}</p>
           <div className="flex items-center my-3 gap-2 font-thin max-[320px]:text-center">
             <p>
-              <b>Rating :</b> {Number(data?.vote_average).toFixed(1)}
+              <b>Rating :</b> {Number(state?.vote_average).toFixed(1)}
             </p>
 
             <span>|</span>
             <p>
               <b>Views : </b>
-              {Number(data?.vote_count)}
+              {Number(state?.vote_count)}
             </p>
 
             {explore === "movie" ? (
@@ -379,15 +391,9 @@ const DetailPage = () => {
               <p>{data?.genres?.[1]?.name}</p>
             </div>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
-
             <div className=" flex flex-row max-[370px]:flex-col gap-1 font-thin py-1 max-[320px]:gap-1">
               <p>
-                <b>Status : </b>
-                {data?.status}
-              </p>
-              <span className="max-[370px]:hidden">|</span>
-              <p>
-                <b>Date :</b> {moment(data?.release_date).format("MMM Do YYYY")}
+                <b>Date :</b> {moment(state?.release_date).format("MMM Do YYYY")}
               </p>
             </div>
           </div>

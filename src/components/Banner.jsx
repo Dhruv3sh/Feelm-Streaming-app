@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "./Loaders/Loading";
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 
@@ -81,7 +81,7 @@ const Banner = ({ trendingMovie }) => {
                     <span>|</span>
                     <p>View : {Number(data.popularity).toFixed(0)}</p>
                   </div>
-                  <Link to={"/" + data.media_type + "/" + data.id}>
+                  <Link to={"/" + data.media_type + "/" + data.id}  state={data}>
                     <button className=" bg-white px-4 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all max-md:px-1 max-md:py-1 ">
                       Play Now
                     </button>
