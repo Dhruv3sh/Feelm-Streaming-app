@@ -89,6 +89,7 @@ const ExplorePage = () => {
           name="description"
           content={`Discover trending ${params.explore} content, only on Feelm Movies. Browse top-rated titles now!`}
         />
+        <meta name="google-site-verification" content="Xm_T86JyHrfix5en8SzyXQM7MlORy-Zh04DxdyuwDIU" />
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
