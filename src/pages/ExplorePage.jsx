@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ColumnCards from "../components/Cards/ColumnCards";
+import { Helmet } from "react-helmet";
 
 const ExplorePage = () => {
   const params = useParams();
@@ -79,15 +80,31 @@ const ExplorePage = () => {
 
   return (
     <div className="py-16 min-h-screen">
+      <Helmet>
+        <title>
+          Explore Popular {params.explore === "movie" ? "Movies" : "TV Shows"} |
+          Feelm Movies
+        </title>
+        <meta
+          name="description"
+          content={`Discover trending ${params.explore} content, only on Feelm Movies. Browse top-rated titles now!`}
+        />
+        <meta name="robots" content="index, follow" />
+        <link
+          rel="canonical"
+          href={`https://feelmmovies.vercel.app/explore/${params.explore}`}
+        />
+      </Helmet>
+
       <div>
         <h3 className="capitalize text-lg lg:text-xl font-semibold mx-1 my-2 md:mx-2 md:my-3 3xl:mt-10">
           Popular {params.explore}
         </h3>
 
         {params.explore === "movie" ? (
-          <ColumnCards data={movieData} mediaType={"movie"}/>
+          <ColumnCards data={movieData} mediaType={"movie"} />
         ) : (
-          <ColumnCards data={tvData} mediaType={"tv"}/>
+          <ColumnCards data={tvData} mediaType={"tv"} />
         )}
 
         <div className="min-h-16">
