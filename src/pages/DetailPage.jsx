@@ -258,6 +258,7 @@ const DetailPage = () => {
             name="keywords"
             content={`${title}, ${genres.map((g) => g.name).join(", ")}`}
           />
+          <meta name="google-site-verification" content="Xm_T86JyHrfix5en8SzyXQM7MlORy-Zh04DxdyuwDIU" />
           <meta property="og:title" content={`${title} | FeelmMovies`} />
           <meta property="og:description" content={description} />
           <meta property="og:image" content={poster_path} />

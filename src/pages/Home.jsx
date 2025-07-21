@@ -80,6 +80,7 @@ export default function Home() {
           name="description"
           content="Watch trending movies, top-rated shows, and the latest releases on FeelmMovies. Enjoy your personalized wishlist and continue watching anytime."
         />
+        <meta name="google-site-verification" content="Xm_T86JyHrfix5en8SzyXQM7MlORy-Zh04DxdyuwDIU" />
         <meta name="keywords" content="movies, tv shows, watch online, streaming, trending, top rated, feelm, feelmmovies" />
         <meta property="og:title" content="Feelmmovies – Stream Trending Movies & Shows" />
         <meta property="og:description" content="Watch trending movies, top-rated shows, and more on Feelmmovies – your personalized streaming experience." />
