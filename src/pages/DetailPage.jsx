@@ -16,26 +16,44 @@ import TrailerComponent from "../components/TrailerComponent";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchRecommendations } from "../store/dataSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 
 const DetailPage = () => {
   const Navigate = useNavigate();
-  const {state} = useLocation();
+  const { state } = useLocation();
   const { explore, id } = useParams();
   const dispatch = useDispatch();
-  const { recommended,similar } = useSelector(
-    (state) => state.MoviesAndShows
-  );
-  const { data } = useFetchDetail(
-    `/${explore}/${id}`
-  );
-  const { data: castData } = useFetchDetail(
-    `/${explore}/${id}/credits`
-  );
+  const { recommended, similar } = useSelector((state) => state.MoviesAndShows);
+  const { data } = useFetchDetail(`/${explore}/${id}`);
+  const { data: castData } = useFetchDetail(`/${explore}/${id}/credits`);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+
+  /** For Seo */
+  const title = state?.title || state?.name;
+  const description =
+    data?.overview || state?.overview || "Watch movies and TV shows online.";
+  const genres = data?.genres || [];
+  const poster_path =
+    "https://image.tmdb.org/t/p/w780" +
+    (state?.poster_path || state?.backdrop_path);
+  const pageUrl = `https://feelmmovies.vercel.app/${explore}/${id}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": explore === "movie" ? "Movie" : "TVSeries",
+    name: title,
+    description: description,
+    image: poster_path,
+    genre: genres.map((g) => g.name),
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: state?.vote_average,
+      ratingCount: state?.vote_count,
+    },
+  };
 
   useEffect(() => {
     if (explore && id) {
@@ -44,7 +62,7 @@ const DetailPage = () => {
   }, [dispatch, explore, id]);
 
   const duration = (data?.runtime / 60).toFixed(1).split(".");
-  
+
   //fetch userlist
   useEffect(() => {
     const fetchUserLists = async () => {
@@ -88,10 +106,10 @@ const DetailPage = () => {
       release_date: state?.release_date || state?.first_air_date,
       vote_average: state?.vote_average,
       backdrop_path: state?.backdrop_path || state?.poster_path,
-      vote_count : state?.vote_count,
-      overview : state?.overview,
+      vote_count: state?.vote_count,
+      overview: state?.overview,
       genres: data?.genres,
-      duration: `${duration?.[0]}h ${duration?.[1]}m`
+      duration: `${duration?.[0]}h ${duration?.[1]}m`,
     };
 
     try {
@@ -183,7 +201,7 @@ const DetailPage = () => {
         vote_count: state?.vote_count,
         overview: state?.overview,
         genres: data?.genres,
-        duration: `${duration?.[0]}h ${duration?.[1]}m`
+        duration: `${duration?.[0]}h ${duration?.[1]}m`,
       };
 
       try {
@@ -233,6 +251,27 @@ const DetailPage = () => {
   return (
     <>
       <div className="w-full h-[360px] relative">
+        <Helmet>
+          <title>{title} | FeelmMovies</title>
+          <meta name="description" content={description} />
+          <meta
+            name="keywords"
+            content={`${title}, ${genres.map((g) => g.name).join(", ")}`}
+          />
+          <meta property="og:title" content={`${title} | FeelmMovies`} />
+          <meta property="og:description" content={description} />
+          <meta property="og:image" content={poster_path} />
+          <meta property="og:type" content="video.movie" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={`${title} | FeelmMovies`} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image" content={poster_path} />
+          <link rel="canonical" href={pageUrl} />
+          <script type="application/ld+json">
+            {JSON.stringify(structuredData)}
+          </script>
+        </Helmet>
+
         <div className="h-full w-full relative">
           {!isLoaded && <Loading />}
           {state ? (
@@ -241,7 +280,7 @@ const DetailPage = () => {
                 "https://image.tmdb.org/t/p/w1280" + state?.backdrop_path ||
                 state?.poster_path
               }
-              onLoad={()=>setIsLoaded(true)}
+              onLoad={() => setIsLoaded(true)}
               alt="poster"
               className={`h-full w-full object-cover transition-all ease-in-out ${
                 isLoaded ? " opacity-100" : " opacity-0"
@@ -393,7 +432,8 @@ const DetailPage = () => {
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
             <div className=" flex flex-row max-[370px]:flex-col gap-1 font-thin py-1 max-[320px]:gap-1">
               <p>
-                <b>Date :</b> {moment(state?.release_date).format("MMM Do YYYY")}
+                <b>Date :</b>{" "}
+                {moment(state?.release_date).format("MMM Do YYYY")}
               </p>
             </div>
           </div>
@@ -435,7 +475,7 @@ const DetailPage = () => {
                             "https://image.tmdb.org/t/p/w300" +
                             starCast.profile_path
                           }
-                          onLoad={()=>setIsProfileLoaded(true)}
+                          onLoad={() => setIsProfileLoaded(true)}
                           alt="Profile"
                           className={` mx-auto w-20 h-20 object-cover rounded-full transition-opacity duration-300  ${
                             isProfileLoaded ? "opacity-100" : "opacity-0"
@@ -443,9 +483,9 @@ const DetailPage = () => {
                         />
                       ) : (
                         //Skeleton loader if profile_path is not available
-                        (<div>
+                        <div>
                           <Skeleton className="rounded-full w-20 h-20" />
-                        </div>)
+                        </div>
                       )}
                     </div>
                     <p className=" font-thin text-sm text-center">
@@ -461,11 +501,7 @@ const DetailPage = () => {
         <div style={{ display: "none" }}></div>
       ) : (
         <div>
-          <CardRow
-            data={similar}
-            heading={`Similar`}
-            media_type={explore}
-          />
+          <CardRow data={similar} heading={`Similar`} media_type={explore} />
         </div>
       )}
       {recommended.length === 0 ? (
