@@ -1,4 +1,4 @@
-const { heroui } = require("@heroui/react");
+import { heroui } from "@heroui/react";
 
 module.exports = {
   content: [
