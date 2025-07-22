@@ -61,13 +61,14 @@ const Header = () => {
 
   return (
     <header
-      className={` ${navbar
+      className={` ${
+        navbar
           ? "backdrop-blur-sm bg-black bg-opacity-60 transition-all duration-700 border-b-neutral-80 border-b-[1px]"
           : "bg-transparent"
-        } fixed top-0 min-h-14 max-h-16 min-w-full z-40`}
+      } fixed top-0 min-h-14 max-h-16 min-w-full z-40`}
     >
       <div className=" px-2 flex items-center h-full w-full">
-        <Link to={'/'}>
+        <Link to={"/"}>
           <img
             className="h-16 w-24 max-md:h-14 3xl:h-24 hover:scale-105 object-contain aspect-auto transition-all active:scale-90"
             src="/images/logo.png"
@@ -81,7 +82,8 @@ const Header = () => {
               <NavLink
                 to={nav.href}
                 className={({ isActive }) =>
-                  ` ml-2 px-2 hover:text-neutral-200 relative before:content-[''] before:absolute before:-bottom-2 before:left-0 before:w-0 before:h-[3px] before:rounded-full before:opacity-0 before:transition-all before:duration-500 before:bg-gradient-to-r before:from-zinc-300 before:to-zinc-200 hover:before:w-full hover:before:opacity-100 tracking-[1px] ${isActive && "text-neutral-50 "
+                  ` ml-2 px-2 hover:text-neutral-200 relative before:content-[''] before:absolute before:-bottom-2 before:left-0 before:w-0 before:h-[3px] before:rounded-full before:opacity-0 before:transition-all before:duration-500 before:bg-gradient-to-r before:from-zinc-300 before:to-zinc-200 hover:before:w-full hover:before:opacity-100 tracking-[1px] ${
+                    isActive && "text-neutral-50 "
                   }`
                 }
               >
@@ -91,7 +93,7 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className=" absolute right-1 flex gap-7 ">
+        <div className=" absolute right-4 flex gap-7 ">
           <form
             className="flex items-center relative pr-5"
             onSubmit={handleSubmit}
@@ -119,8 +121,9 @@ const Header = () => {
                 closeOnSelect
                 placement="bottom-end"
                 className=" bg-black text-white max-w-[130px] min-w-28"
+                shouldBlockScroll= {false}
               >
-                <DropdownTrigger>
+                <DropdownTrigger >
                   <Avatar
                     as="button"
                     src={profileData?.profileImageUrl || "/images/default.png"}
