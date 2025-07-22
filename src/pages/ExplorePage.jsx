@@ -93,7 +93,7 @@ const ExplorePage = () => {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href={`https://feelmmovies.vercel.app/explore/${params.explore}`}
+          href={`https://feelmmovies.vercel.app/${params.explore}`}
         />
       </Helmet>
 

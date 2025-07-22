@@ -38,8 +38,7 @@ const DetailPage = () => {
     data?.overview || state?.overview || "Watch movies and TV shows online.";
   const genres = data?.genres || [];
   const poster_path =
-    "https://image.tmdb.org/t/p/w780" +
-    (state?.poster_path || state?.backdrop_path);
+    "https://image.tmdb.org/t/p/w780"+(state?.poster_path || state?.backdrop_path);
   const pageUrl = `https://feelmmovies.vercel.app/${explore}/${id}`;
   const structuredData = {
     "@context": "https://schema.org",
