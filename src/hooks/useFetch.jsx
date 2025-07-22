@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../components/Firebase";
 
-const useFetch = (firebaseFetch = false, user = null, collection = "wishlist") => {
+const useFetch = (firebaseFetch = false, user = null, collection) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +20,11 @@ const useFetch = (firebaseFetch = false, user = null, collection = "wishlist") =
       userRef,
       (docSnapshot) => {
         const newData = docSnapshot.exists() ? docSnapshot.data()?.[collection] || [] : [];
-        setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev : newData));
+        if(collection === "CurrentlyWatching"){
+          setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev.reverse() : newData.reverse()));
+        }else{
+          setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev : newData));
+        }
         setLoading(false);
       },
       (error) => {
