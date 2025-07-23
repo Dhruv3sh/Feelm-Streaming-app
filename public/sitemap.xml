@@ -21,13 +21,7 @@
   </url>
 
   <url>
-    <loc>https://feelmmovies.vercel.app/UserLogin</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <url>
-    <loc>https://feelmmovies.vercel.app/UserSignup</loc>
+    <loc>https://feelmmovies.vercel.app/userSignup</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

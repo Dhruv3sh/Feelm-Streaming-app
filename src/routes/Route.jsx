@@ -34,19 +34,19 @@ const router = createBrowserRouter([
         element: <Search />,
       },
       {
-        path: "MyList",
+        path: "myList",
         element: <MyList/>,
       },
       {
-        path: "UserLogin",
+        path: "userLogin",
         element: <Login />,
       },
       {
-        path: "UserSignup",
+        path: "userSignup",
         element: <Signup/>
       },
       {
-        path: "Profile",
+        path: "profile",
         element: <ProfilePage/>
       },
       {
