@@ -1,5 +1,6 @@
 import { Button, Input } from "@heroui/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import React, { useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
@@ -14,11 +15,11 @@ const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.auth);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  
 
   const validateEmail = (email) =>
     email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -29,12 +30,12 @@ const Login = () => {
   }, [email]);
 
   const validatePassword = (password) =>
-    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,16}$/)
-  const isPasswordInvalid = useMemo(() =>{
+    password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,16}$/);
+  const isPasswordInvalid = useMemo(() => {
     if (password === "") return false;
 
-    return validatePassword(password) ? false : true
-  }, [password])
+    return validatePassword(password) ? false : true;
+  }, [password]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,10 +49,7 @@ const Login = () => {
     } catch (error) {
       console.error(error);
       toast.error(
-        error.message
-          .split("auth/")[1]
-          .split(")")[0]
-          .replace(/-/g, " "),
+        error.message.split("auth/")[1].split(")")[0].replace(/-/g, " "),
         {
           position: "top-center",
           autoClose: 1200,
@@ -61,6 +59,41 @@ const Login = () => {
       );
     } finally {
       dispatch(setLoading(false)); // Stop loading
+    }
+  };
+
+  const handleReset = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast.error("Please enter your email address.", {
+        position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+      });
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset link sent! Please check your email.", {
+        position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+        hideProgressBar: true,
+      });
+    } catch (err) {
+      let errorMessage;
+      switch (err.code) {
+        case "auth/invalid-email":
+          errorMessage = "Invalid email address.";
+          break;
+        default:
+          errorMessage = "Something went wrong. Please try again.";
+      }
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 1200,
+        theme: "dark",
+      });
     }
   };
 
@@ -121,8 +154,13 @@ const Login = () => {
             <br />
 
             <div className="flex flex-wrap gap-4 items-center justify-center">
-              <Button type="submit" color="primary" variant="ghost" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
+              <Button
+                type="submit"
+                color="primary"
+                variant="ghost"
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
             </div>
 
@@ -135,6 +173,15 @@ const Login = () => {
                 </Link>
               </p>
             </div>
+            <button type="submit" className="w-full text-white p-2 rounded">
+              <p>
+                Forget Password?
+                <b className=" text-yellow-600" onClick={handleReset}>
+                  {" "}
+                  Reset
+                </b>
+              </p>
+            </button>
           </form>
         </div>
       </div>
