@@ -151,6 +151,7 @@ const Header = () => {
                 closeOnSelect
                 placement="bottom-end"
                 className=" bg-black text-white"
+                shouldBlockScroll= {false}
               >
                 <DropdownTrigger>
                   <Avatar as="button">

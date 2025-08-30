@@ -8,6 +8,7 @@ import { auth } from "../components/Firebase";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../store/authSlice";
+import { Helmet } from "react-helmet";
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -65,6 +66,12 @@ const Login = () => {
 
   return (
     <div className=" h-screen bg-[url('../public/images/hero.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center">
+      <Helmet>
+        <link
+          rel="canonical"
+          href={`https://feelmmovies.vercel.app/UserLogin`}
+        />
+      </Helmet>
       <div className=" h-[480px] w-[400px] max-sm:h-[400px] max-sm:w-[300px] bg-black opacity-85 shadow-[0px_0px_21px_13px_#4a5568]">
         <div className="h-full w-full flex flex-col justify-center items-center relative ">
           <div className=" text-2xl italic pb-4">Login</div>

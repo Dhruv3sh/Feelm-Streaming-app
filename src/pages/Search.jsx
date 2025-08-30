@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ColumnCards from "../components/Cards/ColumnCards";
+import { Helmet } from "react-helmet";
 
 const Search = () => {
   const location = useLocation();
@@ -70,6 +71,12 @@ const Search = () => {
 
   return (
     <div className="bg-zinc-950 text-neutral-300 py-16 min-h-[100vh] 3xl:pt-40">
+      <Helmet>
+        <link
+          rel="canonical"
+          href={`https://feelmmovies.vercel.app/search`}
+        />
+      </Helmet>
       <div className="lg:hidden mx-1 my-1">
         <input
           type="text"

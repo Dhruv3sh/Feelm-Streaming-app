@@ -36,7 +36,6 @@ const DetailPage = () => {
   const title = state?.title || state?.name;
   const description =
     data?.overview || state?.overview || "Watch movies and TV shows online.";
-  const genres = data?.genres || [];
   const poster_path =
     "https://image.tmdb.org/t/p/w780"+(state?.poster_path || state?.backdrop_path);
   const pageUrl = `https://feelmmovies.vercel.app/${explore}/${id}`;
@@ -46,13 +45,13 @@ const DetailPage = () => {
     name: title,
     description: description,
     image: poster_path,
-    genre: genres.map((g) => g.name),
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: state?.vote_average,
       ratingCount: state?.vote_count,
     },
   };
+  console.log(title,description,structuredData);
 
   useEffect(() => {
     if (explore && id) {
@@ -255,7 +254,7 @@ const DetailPage = () => {
           <meta name="description" content={description} />
           <meta
             name="keywords"
-            content={`${title}, ${genres.map((g) => g.name).join(", ")}`}
+            content={`${title}`}
           />
           <meta name="google-site-verification" content="Xm_T86JyHrfix5en8SzyXQM7MlORy-Zh04DxdyuwDIU" />
           <meta property="og:title" content={`${title} | FeelmMovies`} />

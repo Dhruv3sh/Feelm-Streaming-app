@@ -9,6 +9,6 @@ body {
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
   scroll-behavior: smooth;
-
-  @apply bg-zinc-950 text-neutral-300;
+  background-color: #09090b;
+  color: #d4d4d8;
 }
