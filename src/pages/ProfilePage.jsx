@@ -22,42 +22,58 @@ const ProfilePage = () => {
 
   // Upload new image to Firebase Storage
   const handleFileUpload = async () => {
-    if (file && editorRef) {
-      try {
-        // Get image data from the editor (cropped area)
-        const canvas = editorRef.getImageScaledToCanvas();
-        const croppedImage = canvas.toDataURL(); // Convert cropped image to data URL
+    if (!file || !editorRef || !user?.uid) return;
 
-        // Upload cropped image to Firebase Storage
-        const fileRef = ref(storage, `profileImages/${user.uid}`);
-        const response = await fetch(croppedImage);
-        const blob = await response.blob();
+    try {
+      const canvas = editorRef.getImageScaledToCanvas();
 
-        await uploadBytes(fileRef, blob);
-        const downloadURL = await getDownloadURL(fileRef);
+      const blob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, "image/jpeg", 0.9);
+      });
 
-        // Update Firestore with new profile image URL
-        const userDocRef = doc(db, "users", user.uid);
-        await updateDoc(userDocRef, { profileImageUrl: downloadURL });
+      const formData = new FormData();
+      formData.append("file", blob);
+      formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
-        dispatch(setProfileData({ ...profileData, profileImageUrl: downloadURL }));
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-        toast.success("Profile image updated!", {
-          position: "top-center",
-          autoClose: 1200,
-          hideProgressBar: true,
-          theme: "dark",
-        });
+      const uploadedImage = await res.json();
 
-        setIsEditorVisible(false); // Hide editor after uploading
-      } catch (error) {
-        toast.error("Error updating image, try a different image", {
-          position: "top-center",
-          autoClose: 1200,
-          hideProgressBar: true,
-          theme: "dark",
-        });
-      }
+      const userDocRef = doc(db, "users", user.uid);
+      await updateDoc(userDocRef, {
+        profileImageUrl: uploadedImage.secure_url,
+      });
+
+      dispatch(
+        setProfileData({
+          ...profileData,
+          profileImageUrl: uploadedImage.secure_url,
+        })
+      );
+
+      toast.success("Profile image updated!", {
+        position: "top-center",
+        autoClose: 1200,
+        hideProgressBar: true,
+        theme: "dark",
+      });
+
+      setIsEditorVisible(false);
+    } catch (error) {
+      console.error("Image upload error:", error);
+
+      toast.error("Error updating image, try a different image", {
+        position: "top-center",
+        autoClose: 1200,
+        hideProgressBar: true,
+        theme: "dark",
+      });
     }
   };
 

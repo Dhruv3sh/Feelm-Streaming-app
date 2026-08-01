@@ -51,7 +51,7 @@ const DetailPage = () => {
       ratingCount: state?.vote_count,
     },
   };
-  console.log(title,description,structuredData);
+  // console.log(title,description,structuredData);
 
   useEffect(() => {
     if (explore && id) {
