@@ -12,7 +12,7 @@ const Player = () => {
   const { explore, id } = useParams();
   const { data } = useFetchDetail(`/${explore}/${id}`);
   const { data: castData } = useFetchDetail(`/${explore}?tmdb=${id}/credits`);
-  const movieurl = `https://vsembed.ru/embed/${explore}/${id}`;
+  const movieurl = `https://vidsrc.io/embed/${explore}/${id}`;
   const dispatch = useDispatch();
   const { recommended, similar } = useSelector((state) => state.MoviesAndShows);
   const [isExpanded, setIsExpanded] = useState(false);
