@@ -19,18 +19,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 
 const DetailPage = () => {
-  const Navigate = useNavigate();
   const { state } = useLocation();
   const { explore, id } = useParams();
-  const dispatch = useDispatch();
-  const { recommended, similar } = useSelector((state) => state.MoviesAndShows);
   const { data } = useFetchDetail(`/${explore}/${id}`);
   const { data: castData } = useFetchDetail(`/${explore}/${id}/credits`);
+  const Navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { recommended, similar } = useSelector((state) => state.MoviesAndShows);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
   const [inWishlist, setInWishlist] = useState(false);
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   /** For Seo */
   const title = state?.title || state?.name;
@@ -239,12 +240,9 @@ const DetailPage = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [id]);
+  const validCast = castData?.cast?.filter((image) => image?.profile_path) || [];
+  const initialItemsCount = 8;
+  const displayedCast = isExpanded ? validCast : validCast.slice(0, initialItemsCount);
 
   return (
     <>
@@ -330,7 +328,7 @@ const DetailPage = () => {
 
           <div className="flex w-full">
             <button
-              className=" bg-white w-[250px] px-1 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all "
+              className=" bg-white w-[200px] px-1 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all "
               onClick={handlePlayBtn}
             >
               Play now
@@ -412,7 +410,7 @@ const DetailPage = () => {
           <div>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
             <h3 className=" text-xl font-bold text-white mb-1">Overview </h3>
-            <p>{data?.overview}</p>
+            <p>{data.overview}</p>
             <p className=" border-b-1 border-neutral-800 my-2 "></p>
             <div className=" flex flex-row gap-[4px] font-thin pt-1 max-[320px]:text-center">
               <h4>
@@ -455,9 +453,7 @@ const DetailPage = () => {
             <h2 className=" font-bold text-lg">Cast : </h2>
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 ">
-            {castData?.cast
-              ?.filter((image) => image?.profile_path)
-              .map((starCast, index) => {
+            {displayedCast.map((starCast, index) => {
                 return (
                   <div key={index}>
                     <div>
@@ -494,6 +490,14 @@ const DetailPage = () => {
                 );
               })}
           </div>
+          {validCast.length > initialItemsCount && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-500 font-semibold text-sm self-start hover:underline mt-2"
+            >
+              {isExpanded ? "Show less..." : "Show more..."}
+            </button>
+          )}
         </div>
       </div>
       {similar.length === 0 ? (

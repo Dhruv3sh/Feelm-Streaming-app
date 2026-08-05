@@ -32,7 +32,7 @@ const Player = () => {
       <div className="flex flex-col w-full">
         <div className="w-full h-full">
           <iframe
-            className="w-full h-[480px] max-lg:h-[350px] max-sm:h-[280px] mx-auto"
+            className="w-full h-[520px] max-lg:h-[350px] max-sm:h-[280px] mx-auto"
             src={movieurl}
             title="Video player"
             allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -75,17 +75,6 @@ const Player = () => {
               }`}
             >
               <p className=" pr-3">{data?.overview}</p>
-              <p className="pt-4 text-12px sm:text-13px 2xl:text-sm text-white opacity-50 gap-1">
-                Cast :{" "}
-                {castData?.cast
-                  ?.filter((acting) => acting.known_for_department === "Acting")
-                  ?.map((actor, index, array) => (
-                    <span key={actor.id}>
-                      {actor.name}
-                      {index < array.length - 1 && ", "}
-                    </span>
-                  ))}
-              </p>
             </div>
             <div>
               <button

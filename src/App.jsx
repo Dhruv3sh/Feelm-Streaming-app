@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { listenToAuthChanges } from "./store/authSlice";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ function App() {
     <main className="pb-14 lg:pb-0">
       <Header />
       <div>
+        <ScrollToTop/>
         <ToastContainer/>
         <Outlet />
       </div>
