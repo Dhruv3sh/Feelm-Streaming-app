@@ -7,9 +7,9 @@ const ErrorPage = () => {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 text-center">
       <img
-        src="/images/popcorn.png"
+        src="/images/popcorn.webp"
         alt="Popcorn"
-        className="w-20 animate-bounce"
+        className="w-28 animate-bounce"
       />
       <h1 className="text-7xl font-bold text-red-500 mb-4">{error.status}</h1>
       <h2 className="text-3xl font-semibold mb-2">Oops! Page Not Found</h2>
