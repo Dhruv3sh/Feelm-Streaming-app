@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ColumnCards from "../components/Cards/ColumnCards";
 import { Helmet } from "react-helmet";
@@ -8,62 +8,104 @@ const Search = () => {
   const location = useLocation();
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false); // Track loading state
-  const [hasMore, setHasMore] = useState(true); // Track if there is more data to fetch
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
 
-  const query = location?.search?.slice(3);
-
-  const fetchData = async (reset = false) => {
-    if (loading || !query) return; // Prevent fetching if already loading or no query
-    setLoading(true);
-    try {
-      const response = await axios.get(`/search/multi`, {
-        params: {
-          query,
-          page,
-        },
-      });
-
-      // Simulate delay for better UX
-      setTimeout(() => {
-        const results = response.data.results;
-        setData((prev) => (reset ? results : [...prev, ...results]));
-        setHasMore(results.length > 0);
-        setLoading(false);
-      }, 600);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setLoading(false);
-    }
-  };
+  const query = useMemo(
+    () => new URLSearchParams(location.search).get("q")?.trim() || "",
+    [location.search]
+  );
+  const [searchValue, setSearchValue] = useState(query);
+  const lastQueryRef = useRef(query);
 
   useEffect(() => {
-    if (query) {
-      setPage(1);
-      setData([]);
-      fetchData(true); // Reset data for new query
-    }
+    const timer = setTimeout(() => {
+      const nextQuery = searchValue.trim();
+
+      if (nextQuery === query) return;
+
+      if (nextQuery) {
+        navigate(`/search?q=${encodeURIComponent(nextQuery)}`);
+      } else {
+        navigate("/search");
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchValue, query, navigate]);
+
+  useEffect(() => {
+    setSearchValue(query);
   }, [query]);
 
+  useEffect(() => {
+    if (!query) {
+      setData([]);
+      setPage(1);
+      setHasMore(true);
+      lastQueryRef.current = query;
+      return;
+    }
+
+    const controller = new AbortController();
+    const isNewQuery = lastQueryRef.current !== query;
+    const pageToFetch = isNewQuery ? 1 : page;
+
+    if (isNewQuery) {
+      lastQueryRef.current = query;
+      setPage(1);
+      setData([]);
+      setHasMore(true);
+    }
+
+    const fetchSearchResults = async () => {
+      setLoading(true);
+
+      try {
+        const response = await axios.get("/search/multi", {
+          params: { query, page: pageToFetch },
+          signal: controller.signal,
+        });
+
+        const results = response.data.results || [];
+
+        setData((prev) => {
+          if (pageToFetch === 1) return results;
+
+          const existingIds = new Set(prev.map((item) => item.id));
+          const newResults = results.filter((item) => !existingIds.has(item.id));
+
+          return [...prev, ...newResults];
+        });
+
+        setHasMore(results.length > 0);
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Error fetching data:", error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSearchResults();
+
+    return () => controller.abort();
+  }, [query, page]);
+
   const handleScroll = useCallback(() => {
-    if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-      hasMore &&
-      !loading
-    ) {
-      setPage((prev) => prev + 1);
-    }
-  }, [hasMore, loading]);
+    if (loading || !hasMore || data.length === 0) return;
+    const nearBottom =
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+
+  if (nearBottom) {
+    setPage((prev) => prev + 1);
+  }
+  }, [loading, hasMore, data.length]);
 
   useEffect(() => {
-    if (page > 1) {
-      fetchData();
-    }
-  }, [page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -74,16 +116,16 @@ const Search = () => {
       <Helmet>
         <link
           rel="canonical"
-          href={`https://feelmmovies.vercel.app/search`}
+          href="https://feelmmovies.vercel.app/search"
         />
       </Helmet>
       <div className="lg:hidden mx-1 my-1">
         <input
           type="text"
           placeholder="Search Here....."
-          value={query?.split("%20")?.join(" ")}
-          onChange={(e) => navigate(`/search?q=${e.target.value}`)}
-          className="rounded-full w-full px-4 py-1 bg-neutral-300 text-black"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className="rounded-full w-full px-4 py-1 mb-2 bg-neutral-300 text-black"
         />
       </div>
       <div>

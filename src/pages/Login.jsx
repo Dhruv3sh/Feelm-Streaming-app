@@ -1,11 +1,12 @@
-import { Button, Input } from "@heroui/react";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { sendPasswordResetEmail } from "firebase/auth";
 import React, { useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { auth } from "../components/Firebase";
+import { auth } from "../components/firebase/firebaseAuth";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../store/authSlice";

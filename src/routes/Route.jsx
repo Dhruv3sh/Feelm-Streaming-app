@@ -1,15 +1,24 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "../pages/Home";
+import { lazy, Suspense } from "react";
 import App from "../App";
-import ExplorePage from "../pages/ExplorePage";
-import DetailPage from "../pages/DetailPage";
-import Search from "../pages/Search";
-import Player from "../pages/Player";
-import Login from "../pages/Login";
-import Signup from "../pages/Signup";
-import ProfilePage from "../pages/ProfilePage";
-import MyList from "../pages/MyList";
 import Error from "../pages/Error";
+
+const Home = lazy(() => import("../pages/Home"));
+const ExplorePage = lazy(() => import("../pages/ExplorePage"));
+const DetailPage = lazy(() => import("../pages/DetailPage"));
+const Search = lazy(() => import("../pages/Search"));
+const Player = lazy(() => import("../pages/Player"));
+const Login = lazy(() => import("../pages/Login"));
+const Signup = lazy(() => import("../pages/Signup"));
+const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+const MyList = lazy(() => import("../pages/MyList"));
+
+
+const lazyPage = (Component) => (
+  <Suspense fallback={<div className="min-h-screen bg-zinc-950" />}>
+    <Component />
+  </Suspense>
+);
 
 const router = createBrowserRouter([
   {
@@ -19,39 +28,39 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: lazyPage(Home)
       },
       {
         path: ":explore",
-        element: <ExplorePage />,
+        element: lazyPage(ExplorePage)
       },
       {
         path: ":explore/:id",
-        element: <DetailPage />,
+        element: lazyPage(DetailPage)
       },
       {
         path: "search",
-        element: <Search />,
+        element: lazyPage(Search)
       },
       {
         path: "myList",
-        element: <MyList/>,
+        element: lazyPage(MyList)
       },
       {
         path: "userLogin",
-        element: <Login />,
+        element: lazyPage(Login)
       },
       {
         path: "userSignup",
-        element: <Signup/>
+        element: lazyPage(Signup)
       },
       {
         path: "profile",
-        element: <ProfilePage/>
+        element: lazyPage(ProfilePage)
       },
       {
         path: "/player/:explore/:id",
-        element: <Player />,
+        element: lazyPage(Player)
       },
     ],
   },

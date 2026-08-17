@@ -1,4 +1,4 @@
-import { heroui } from "@heroui/react";
+import { heroui } from "@heroui/theme";
 
 module.exports = {
   content: [

@@ -1,17 +1,19 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ColumnCards from "../components/Cards/ColumnCards";
 import { Helmet } from "react-helmet";
 
 const ExplorePage = () => {
   const params = useParams();
-  const [pageNo, setPageNo] = useState(1);
+  const [pageByType, setPageByType] = useState({movie: 1,tv: 1,});
   const [movieData, setMoviesData] = useState([]);
   const [tvData, setTvData] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state
+  const currentType = params.explore;
+  const pageNo = pageByType[currentType] || 1;
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`/discover/${params.explore}`, {
         params: {
@@ -21,18 +23,20 @@ const ExplorePage = () => {
 
       if (params.explore === "movie") {
         setMoviesData((prevData) => {
+          const existingIds = new Set(prevData.map((item) => item.id));
           const newData = response.data.results.filter(
-            (newItem) =>
-              !prevData.some((prevItem) => prevItem.id === newItem.id)
+            (newItem) => !existingIds.has(newItem.id)
           );
+
           return [...prevData, ...newData];
         });
       } else if (params.explore === "tv") {
         setTvData((prevData) => {
+          const existingIds = new Set(prevData.map((item) => item.id));
           const newData = response.data.results.filter(
-            (newItem) =>
-              !prevData.some((prevItem) => prevItem.id === newItem.id)
+            (newItem) => !existingIds.has(newItem.id)
           );
+
           return [...prevData, ...newData];
         });
       }
@@ -41,42 +45,41 @@ const ExplorePage = () => {
     } finally {
       setLoading(false); // Stop loading after fetch
     }
-  };
+  },[pageNo,params.explore]);
 
-  const handleScroll = () => {
+  const currentData = currentType === "movie" ? movieData : tvData;
+  const handleScroll = useCallback(() => {
+    if (loading || currentData.length === 0) return;
     if (
       window.innerHeight + window.scrollY >=
       document.body.offsetHeight - 100
     ) {
-      setPageNo((prevPageNo) => ++prevPageNo);
-    }
-  };
+      setPageByType((prev) => ({
+        ...prev,
+        [currentType]: (prev[currentType] || 1) + 1,
+      }));
+      }
+  },[loading,currentType, currentData.length]);
 
   useEffect(() => {
-    if (pageNo > 1) {
-      setLoading(true); // Start loading only when pageNo > 1
-    }
+    setLoading(true); // Start loading
 
     const delayFetch = setTimeout(
       () => {
         fetchData();
       },
-      pageNo > 1 ? 500 : 0
+      pageNo > 1 ? 300 : 0
     );
 
     return () => clearTimeout(delayFetch);
-  }, [pageNo]);
-
-  useEffect(() => {
-    fetchData();
-  }, [params.explore]);
+  }, [pageNo,fetchData]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [handleScroll]);
 
   return (
     <div className="py-16 min-h-screen">

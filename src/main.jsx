@@ -6,7 +6,7 @@ import router from "./routes/Route";
 import axios from "axios";
 import { Provider } from "react-redux";
 import { store } from "./store/Store";
-import { HeroUIProvider } from "@heroui/react";
+import { HeroUIProvider } from "@heroui/system";
 
 
 /*axios Setup*/

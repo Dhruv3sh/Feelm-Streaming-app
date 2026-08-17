@@ -1,6 +1,24 @@
 import React, { memo, useRef } from 'react'
 import Card from './Card'
-import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
+
+const ArrowIcon = ({ direction }) => (
+    <svg
+        aria-hidden="true"
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+    >
+        {direction === "left" ? (
+            <path d="m15 18-6-6 6-6" />
+        ) : (
+            <path d="m9 18 6-6-6-6" />
+        )}
+    </svg>
+);
 
 const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
 
@@ -34,11 +52,11 @@ const CardRow = ({ data = [], heading, trending, media_type, Dots }) => {
                         ))}
                 </div>
                 <div className=' top-0 w-full h-full hidden lg:flex items-center justify-between absolute '>
-                    <button onClick={handlePrevious} className=' bg-white text-black rounded-full p-1 -ml-1 z-10' >
-                        <FaAngleLeft />
+                    <button onClick={handlePrevious} aria-label="Previous" className=' bg-white text-black rounded-full p-1 -ml-1 z-10' >
+                        <ArrowIcon direction="left" />
                     </button>
-                    <button onClick={handleNext} className=' bg-white text-black rounded-full p-1 -ml-1 z-10'>
-                        <FaAngleRight />
+                    <button onClick={handleNext} aria-label="Next" className=' bg-white text-black rounded-full p-1 -ml-1 z-10'>
+                        <ArrowIcon direction="right" />
                     </button>
                 </div>
             </div>

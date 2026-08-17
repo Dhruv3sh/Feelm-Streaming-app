@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../components/Firebase";
 
 const useFetch = (firebaseFetch = false, user = null, collection) => {
   const [data, setData] = useState([]);
@@ -13,28 +11,40 @@ const useFetch = (firebaseFetch = false, user = null, collection) => {
       return;
     }
 
+    let unsubscribe = () => {};
+    let isActive = true;
+
     setLoading(true);
-    const userRef = doc(db, "users", user.uid);
+    Promise.all([
+      import("firebase/firestore"),
+      import("../components/firebase/firebaseDb"),
+    ]).then(([{ doc, onSnapshot }, { db }]) => {
+      if (!isActive) return;
 
-    const unsubscribe = onSnapshot(
-      userRef,
-      (docSnapshot) => {
-        const newData = docSnapshot.exists() ? docSnapshot.data()?.[collection] || [] : [];
-        if(collection === "CurrentlyWatching"){
-          setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev.reverse() : newData.reverse()));
-        }else{
-          setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev : newData));
+      const userRef = doc(db, "users", user.uid);
+      unsubscribe = onSnapshot(
+        userRef,
+        (docSnapshot) => {
+          const newData = docSnapshot.exists() ? docSnapshot.data()?.[collection] || [] : [];
+          if(collection === "CurrentlyWatching"){
+            setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? [...prev].reverse() : [...newData].reverse()));
+          }else{
+            setData((prev) => (JSON.stringify(prev) === JSON.stringify(newData) ? prev : newData));
+          }
+          setLoading(false);
+        },
+        (error) => {
+          console.error(`Error fetching ${collection} data:`, error);
+          setLoading(false);
         }
-        setLoading(false);
-      },
-      (error) => {
-        console.error(`Error fetching ${collection} data:`, error);
-        setLoading(false);
-      }
-    );
+      );
+    });
 
-    return () => unsubscribe(); // Cleanup on unmount or dependency change
-  }, [firebaseFetch, user?.uid, collection]);
+    return () => {
+      isActive = false;
+      unsubscribe();
+    }; // Cleanup on unmount or dependency change
+  }, [firebaseFetch, user, collection]);
 
   return { data, loading };
 };

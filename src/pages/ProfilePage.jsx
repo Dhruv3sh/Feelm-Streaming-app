@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth, storage, db } from "../components/Firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth } from "../components/firebase/firebaseAuth";
+import { db } from "../components/firebase/firebaseDb";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiEdit } from "react-icons/ti";

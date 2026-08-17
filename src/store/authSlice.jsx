@@ -1,7 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../components/Firebase";
 
 const initialState = {
   user: null,
@@ -55,8 +52,13 @@ export const {
 //** Async Thunks **//
 //** Fetch profile data for the logged-in user **//
 
-export const listenToAuthChanges = () => (dispatch) => {
+export const listenToAuthChanges = () => async (dispatch) => {
   dispatch(setLoading(true));
+  const [{ onAuthStateChanged }, { auth }] = await Promise.all([
+    import("firebase/auth"),
+    import("../components/firebase/firebaseAuth"),
+  ]);
+
   onAuthStateChanged(auth, async (currentUser) => {
     if (currentUser) {
       const { uid, email } = currentUser;
@@ -72,6 +74,10 @@ export const listenToAuthChanges = () => (dispatch) => {
 export const fetchProfileData = (uid) => async (dispatch) => {
   dispatch(setProfileLoading(true));
   try {
+    const [{ doc, getDoc }, { db }] = await Promise.all([
+      import("firebase/firestore"),
+      import("../components/firebase/firebaseDb"),
+    ]);
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {

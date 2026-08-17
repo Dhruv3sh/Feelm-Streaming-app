@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useRouteError } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
 
 const ErrorPage = () => {
     const error = useRouteError();
@@ -21,7 +20,7 @@ const ErrorPage = () => {
         to="/"
         className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 transition-colors px-5 py-2 rounded-full text-white font-medium shadow-lg"
       >
-        <FaArrowLeft size={18} />
+        <span aria-hidden="true">&lt;</span>
         Back to Home
       </Link>
     </div>

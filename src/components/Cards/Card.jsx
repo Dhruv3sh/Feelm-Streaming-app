@@ -1,10 +1,6 @@
 import React, { memo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import LoadingImg from "../Loaders/LoadingImg";
-import { RxCross2 } from "react-icons/rx";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../Firebase";
 import { Skeleton } from "@heroui/skeleton";
 
 const Card = ({ data, trending, Dots, index, media_type }) => {
@@ -16,6 +12,10 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
   const handleRemoveBtn = async (event) => {
     event.stopPropagation(); // Prevent event propagation
     if (!user) return; // Ensure user is logged in
+    const [{ doc, getDoc, updateDoc }, { db }] = await Promise.all([
+      import("firebase/firestore"),
+      import("../firebase/firebaseDb"),
+    ]);
     const userRef = doc(db, "users", user.uid);
 
     try {
@@ -55,8 +55,10 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
           <Link to={`/${mediaType}/${data.id}`}  state={data}>
           <Skeleton isLoaded={isLoaded}>
           <img
-              src={"https://image.tmdb.org/t/p/w342" + data?.poster_path}
+              src={"https://image.tmdb.org/t/p/w185" + data?.poster_path}
               alt="poster"
+              loading="lazy"
+              decoding="async"
               onLoad={() => setIsLoaded(true)}
               className={`hover:scale-[1.04] transition-all duration-200 ease-in-out ${
                 isLoaded ? " opacity-100" : " opacity-0"
@@ -76,7 +78,9 @@ const Card = ({ data, trending, Dots, index, media_type }) => {
           {Dots && (
             <div className="flex flex-col py-1 px-1 overflow-hidden hover:backdrop-blur-2xl transition-all duration-200 hover:rounded-full">
               <button onClick={handleRemoveBtn} className="cursor-pointer">
-                <RxCross2 size={26} />
+                <span className="block h-6 w-6 text-center text-2xl leading-5" aria-hidden="true">
+                  x
+                </span>
               </button>
             </div>
           )}

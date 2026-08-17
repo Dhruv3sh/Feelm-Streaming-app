@@ -4,8 +4,10 @@ import useFetchDetail from "../hooks/useFetchDetail";
 import moment from "moment/moment";
 import CardRow from "../components/Cards/CardRow";
 import Loading from "../components/Loaders/Loading";
-import { Card, Skeleton } from "@heroui/react";
-import { auth, db } from "../components/Firebase";
+import { Card } from "@heroui/card";
+import { Skeleton } from "@heroui/skeleton";
+import { auth } from "../components/firebase/firebaseAuth";
+import { db } from "../components/firebase/firebaseDb";
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { MdPlaylistAdd } from "react-icons/md";
@@ -274,7 +276,7 @@ const DetailPage = () => {
           {state ? (
             <img
               src={
-                "https://image.tmdb.org/t/p/w1280" + state?.backdrop_path ||
+                "https://image.tmdb.org/t/p/w780" + state?.backdrop_path ||
                 state?.poster_path
               }
               onLoad={() => setIsLoaded(true)}

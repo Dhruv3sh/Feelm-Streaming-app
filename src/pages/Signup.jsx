@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { Button, Input } from "@heroui/react";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -7,7 +8,8 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setLoading, setError } from "../store/authSlice";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../components/Firebase";
+import { auth } from "../components/firebase/firebaseAuth";
+import { db } from "../components/firebase/firebaseDb";
 import { doc, setDoc } from "firebase/firestore";
 import { Helmet } from "react-helmet";
 

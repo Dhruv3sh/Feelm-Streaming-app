@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -7,13 +7,207 @@
       name="description"
       content="Watch trending movies, top-rated shows, and the latest releases on FeelmMovies. Enjoy your personalized wishlist and continue watching anytime."
     />
-    <meta name="google-site-verification" content="Xm_T86JyHrfix5en8SzyXQM7MlORy-Zh04DxdyuwDIU" />
+    <meta
+      name="google-site-verification"
+      content="Xm_T86JyHrfix5en8SzyXQM7MlORy-Zh04DxdyuwDIU"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
+    <link rel="preconnect" href="https://api.themoviedb.org" />
+    <link rel="preconnect" href="https://image.tmdb.org" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      />
+    </noscript>
+    <style>
+      body {
+        margin: 0;
+        background: #09090b;
+      }
+
+      .movie-loader {
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            circle at 50% 40%,
+            rgba(220, 38, 38, 0.18),
+            transparent 34%
+          ),
+          linear-gradient(180deg, #09090b 0%, #000 100%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, sans-serif;
+        overflow: hidden;
+      }
+
+      .projector {
+        position: relative;
+        width: 190px;
+        height: 130px;
+        animation: floatProjector 2.4s ease-in-out infinite;
+      }
+
+      .body {
+        position: absolute;
+        bottom: 0;
+        left: 35px;
+        width: 120px;
+        height: 70px;
+        background: linear-gradient(135deg, #27272a, #09090b);
+        border: 2px solid #3f3f46;
+        border-radius: 14px;
+        box-shadow: 0 0 40px rgba(239, 68, 68, 0.25);
+      }
+
+      .lens {
+        position: absolute;
+        right: -18px;
+        top: 22px;
+        width: 34px;
+        height: 28px;
+        background: #111;
+        border: 3px solid #facc15;
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(250, 204, 21, 0.8);
+      }
+
+      .beam {
+        position: absolute;
+        left: 155px;
+        top: 61px;
+        width: 170px;
+        height: 70px;
+        background: linear-gradient(
+          90deg,
+          rgba(250, 204, 21, 0.35),
+          transparent
+        );
+        clip-path: polygon(0 35%, 100% 0, 100% 100%, 0 65%);
+        animation: flicker 0.18s infinite alternate;
+      }
+
+      .reel {
+        position: absolute;
+        top: 0;
+        width: 66px;
+        height: 66px;
+        border: 6px solid #e5e7eb;
+        border-radius: 50%;
+        background: #18181b;
+        animation: spin 1s linear infinite;
+      }
+
+      .reel-left {
+        left: 22px;
+      }
+
+      .reel-right {
+        right: 22px;
+        animation-duration: 0.8s;
+      }
+
+      .reel span {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background: #09090b;
+        border-radius: 50%;
+      }
+
+      .reel span:nth-child(1) {
+        top: 8px;
+        left: 24px;
+      }
+      .reel span:nth-child(2) {
+        right: 8px;
+        top: 24px;
+      }
+      .reel span:nth-child(3) {
+        bottom: 8px;
+        left: 24px;
+      }
+      .reel span:nth-child(4) {
+        left: 8px;
+        top: 24px;
+      }
+
+      .loader-text {
+        margin-top: 34px;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 3px;
+      }
+
+      .loader-subtext {
+        margin-top: 8px;
+        color: #a1a1aa;
+        font-size: 14px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes flicker {
+        from {
+          opacity: 0.45;
+          transform: scaleX(0.96);
+        }
+        to {
+          opacity: 0.9;
+          transform: scaleX(1);
+        }
+      }
+
+      @keyframes floatProjector {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+    </style>
     <title>Feelm App</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="movie-loader">
+        <div class="projector">
+          <div class="reel reel-left">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="reel reel-right">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="body">
+            <div class="lens"></div>
+          </div>
+          <div class="beam"></div>
+        </div>
+
+        <div class="loader-text">FEELM MOVIES</div>
+        <div class="loader-subtext">Rolling the opening scene...</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

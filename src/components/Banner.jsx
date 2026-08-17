@@ -24,6 +24,7 @@ const Autoplay = (slider, { delay = 4000 } = {}) => {
   slider.on("dragStarted", clearNextTimeout);
   slider.on("animationEnded", nextTimeout);
   slider.on("updated", nextTimeout);
+  slider.on("destroyed", clearNextTimeout);
 };
 
 const Banner = ({ trendingMovie }) => {
@@ -37,7 +38,7 @@ const Banner = ({ trendingMovie }) => {
     [Autoplay]
   );
 
-  if (trendingMovie.length === 0) {
+  if (!trendingMovie || trendingMovie.length === 0) {
     return <Loading />;
   }
 
@@ -54,13 +55,16 @@ const Banner = ({ trendingMovie }) => {
                 {data?.backdrop_path ? (
                   <img
                     src={
-                      "https://image.tmdb.org/t/p/w1280" + data?.backdrop_path
+                      "https://image.tmdb.org/t/p/w780" + data?.backdrop_path
                     }
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchpriority={index === 0 ? "high" : "auto"}
+                    decoding="async"
                     onLoad={()=>setIsLoaded(true)}
                     className={`h-full w-full object-cover transition-opacity ${
                       isLoaded ? " opacity-100" : " opacity-0"
                     } `}
-                    alt="images"
+                    alt={data?.title || data?.name || "Movie banner"}
                   />
                 ) : (
                   <Loading />

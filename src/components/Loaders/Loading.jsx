@@ -5,7 +5,7 @@ const Loading = () => {
     return (
         <div className="w-full space-y-5 relative">
             <Skeleton className="rounded-sm">
-                <div className="h-[650px] max-md:h-[400px] rounded-lg bg-default-300"></div>
+                <div className="h-[750px] max-md:h-[400px] rounded-lg bg-default-300"></div>
             </Skeleton>
         </div>
     );

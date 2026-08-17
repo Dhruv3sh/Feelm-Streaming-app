@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Skeleton } from '@heroui/react';
+import { Card } from "@heroui/card";
+import { Skeleton } from "@heroui/skeleton";
 
 export default function SkeletonCardRow() {
   const skeletonItems = Array.from({ length: '8' });
