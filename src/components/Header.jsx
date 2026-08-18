@@ -73,7 +73,7 @@ const Header = () => {
         navbar
           ? "backdrop-blur-sm bg-black bg-opacity-60 transition-all duration-700 border-b-neutral-80 border-b-[1px]"
           : "bg-transparent"
-      } fixed top-0 min-h-14 max-h-16 min-w-full z-40`}
+      } fixed top-0 min-h-14 max-h-[5.5rem] min-w-full z-40`}
     >
       <div className=" px-2 flex items-center h-full w-full">
         <Link to={"/"}>
