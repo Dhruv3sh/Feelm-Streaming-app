@@ -40,6 +40,12 @@ const DetailPage = () => {
   const [episodesData, setEpisodesData] = useState(null);
   const [isEpisodesLoading, setIsEpisodesLoading] = useState(false);
 
+  const validCast = castData?.cast?.filter((image) => image?.profile_path) || [];
+  const initialItemsCount = 8;
+  const displayedCast = isExpanded ? validCast : validCast.slice(0, initialItemsCount);
+  const seasons = data?.seasons?.filter((items)=> items.name !== "Specials") || [];
+  const episodes = episodesData?.episodes || [];
+
   /** For Seo */
   const title = state?.title || state?.name;
   const description =
@@ -193,7 +199,7 @@ const DetailPage = () => {
   };
 
   //play button
-  const handlePlayBtn = async () => {
+  const handlePlayBtn = async (episode) => {
     if (auth.currentUser) {
       const userRef = doc(db, "users", auth.currentUser.uid);
       const item = {
@@ -233,7 +239,7 @@ const DetailPage = () => {
           if(explore === "movie"){
             Navigate(`/player/${explore}/${id}`);
           }else{
-            Navigate(`/player/${explore}/${id}?s=${currentSeason}&e=1`);
+            Navigate(`/player/${explore}/${id}?s=${currentSeason}&e=${episode.episode_number || 1}`);
           }
         } else {
           console.error("User document does not exist");
@@ -269,16 +275,6 @@ const DetailPage = () => {
     };
     fetchEpisodes();
   },[explore,id,currentSeason])
-
-  const handleEpisodes = (episode) =>{
-    Navigate(`/player/${explore}/${id}?s=${currentSeason}&e=${episode.episode_number}`);
-  };
-
-  const validCast = castData?.cast?.filter((image) => image?.profile_path) || [];
-  const initialItemsCount = 8;
-  const displayedCast = isExpanded ? validCast : validCast.slice(0, initialItemsCount);
-  const seasons = data?.seasons?.filter((items)=> items.name !== "Specials") || [];
-  const episodes = episodesData?.episodes || [];
 
   return (
     <>
@@ -565,7 +561,7 @@ const DetailPage = () => {
               {episodes.map((episode) => {
                 const isActive = 1 === episode.episode_number;
                 return (
-                  <div key={episode.id} onClick={()=>handleEpisodes(episode)} className={`group flex items-center gap-3 rounded-lg border  bg-[#171821] p-3 min-h-[7.8rem] transition-colors hover:border-orange-600 ${isActive ? "border-orange-600": "border-[#292a37]"} cursor-pointer`}>
+                  <div key={episode.id} onClick={()=>handlePlayBtn(episode)} className={`group flex items-center gap-3 rounded-lg border  bg-[#171821] p-3 min-h-[7.8rem] transition-colors hover:border-orange-600 ${isActive ? "border-orange-600": "border-[#292a37]"} cursor-pointer`}>
                   <img
                     src={episode?.still_path ? "https://image.tmdb.org/t/p/w300" + episode.still_path : "/images/default.png"}
                     alt={episode?.name || "Episode"}
