@@ -12,6 +12,7 @@ import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { MdPlaylistAdd } from "react-icons/md";
 import { MdPlaylistAddCheck } from "react-icons/md";
+import { MdPlayArrow } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
 import TrailerComponent from "../components/TrailerComponent";
@@ -19,6 +20,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { fetchRecommendations } from "../store/dataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
+import axios from "axios";
 
 const DetailPage = () => {
   const { state } = useLocation();
@@ -34,6 +36,9 @@ const DetailPage = () => {
   const [inCurrentWatchList, setInCurrentWatchList] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentSeason, setCurrentSeason] = useState(1);
+  const [episodesData, setEpisodesData] = useState(null);
+  const [isEpisodesLoading, setIsEpisodesLoading] = useState(false);
 
   /** For Seo */
   const title = state?.title || state?.name;
@@ -225,7 +230,11 @@ const DetailPage = () => {
           }
 
           // Navigate to the player
-          Navigate(`/player/${explore}/${id}`);
+          if(explore === "movie"){
+            Navigate(`/player/${explore}/${id}`);
+          }else{
+            Navigate(`/player/${explore}/${id}?s=${currentSeason}&e=1`);
+          }
         } else {
           console.error("User document does not exist");
         }
@@ -242,9 +251,34 @@ const DetailPage = () => {
     }
   };
 
+  //Episodes
+  useEffect(()=>{
+    const fetchEpisodes = async() =>{
+      if (explore !== "tv" || !id || !currentSeason) return;
+
+      setIsEpisodesLoading(true);
+      try {
+        const episodes = await axios.get(`/tv/${id}/season/${currentSeason}?language=en-US`);
+        setEpisodesData(episodes?.data);
+      } catch (error) {
+        console.log(error);
+        setEpisodesData(null);
+      } finally {
+        setIsEpisodesLoading(false);
+      }
+    };
+    fetchEpisodes();
+  },[explore,id,currentSeason])
+
+  const handleEpisodes = (episode) =>{
+    Navigate(`/player/${explore}/${id}?s=${currentSeason}&e=${episode.episode_number}`);
+  };
+
   const validCast = castData?.cast?.filter((image) => image?.profile_path) || [];
   const initialItemsCount = 8;
   const displayedCast = isExpanded ? validCast : validCast.slice(0, initialItemsCount);
+  const seasons = data?.seasons?.filter((items)=> items.name !== "Specials") || [];
+  const episodes = episodesData?.episodes || [];
 
   return (
     <>
@@ -502,18 +536,80 @@ const DetailPage = () => {
           )}
         </div>
       </div>
+
+      {seasons.length > 0 && (
+      <div className="px-3 my-10 box-border">
+        <h2 className="text-white text-2xl max-md:text-xl font-bold mb-5 border-l-4 border-l-red-700 pl-4">Episodes</h2>
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {seasons.map((items)=>{
+            const isActive = currentSeason === items.season_number;
+            return(
+              <button key={items.name} onClick={() => setCurrentSeason(items.season_number)} className={`shrink-0 px-5 py-3 rounded-lg border text-sm font-bold transition-colors ${
+                isActive 
+                  ? "bg-orange-600 border-orange-500 text-white" 
+                  : "bg-[#171821] border-[#292a37] text-gray-300 hover:border-orange-600 hover:text-white"
+              }`}>{items.name}
+              </button>
+            ) 
+          })}
+        </div>
+        <div className="mt-5 max-h-[36rem] overflow-y-auto pr-1">
+          {isEpisodesLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="h-[7.8rem] rounded-lg border border-[#292a37] bg-[#171821] animate-pulse"></div>
+              ))}
+            </div>
+          ) : episodes.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+              {episodes.map((episode) => {
+                const isActive = 1 === episode.episode_number;
+                return (
+                  <div key={episode.id} onClick={()=>handleEpisodes(episode)} className={`group flex items-center gap-3 rounded-lg border  bg-[#171821] p-3 min-h-[7.8rem] transition-colors hover:border-orange-600 ${isActive ? "border-orange-600": "border-[#292a37]"} cursor-pointer`}>
+                  <img
+                    src={episode?.still_path ? "https://image.tmdb.org/t/p/w300" + episode.still_path : "/images/default.png"}
+                    alt={episode?.name || "Episode"}
+                    loading="lazy"
+                    className="h-[4.3rem] w-28 shrink-0 rounded-md object-cover bg-zinc-900"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-orange-600 text-xs font-bold">
+                      S{currentSeason} E{episode?.episode_number}
+                    </p>
+                    <h3 className="mt-2 text-white text-base font-bold leading-tight truncate">
+                      {episode?.name}
+                    </h3>
+                    <p className="mt-2 text-sm leading-5 text-slate-500 line-clamp-2">
+                      {episode?.overview || "No overview available."}
+                    </p>
+                  </div>
+                  <button aria-label={`Play ${episode?.name}`} className="shrink-0 text-red-600 opacity-0 transition-opacity group-hover:opacity-100">
+                    <MdPlayArrow size={28} />
+                  </button>
+                </div>
+                )
+                
+                })}
+            </div>
+          ) : (
+            <p className="text-slate-500">No episodes available for this season.</p>
+          )}
+        </div>
+      </div>
+      )}
+
+      {recommended.length === 0 ? (
+        <div style={{ display: "none" }}></div>
+      ) : (
+        <div>
+          <CardRow data={recommended} heading={`You May Also Like `} />
+        </div>
+      )}
       {similar.length === 0 ? (
         <div style={{ display: "none" }}></div>
       ) : (
         <div>
           <CardRow data={similar} heading={`Similar`} media_type={explore} />
-        </div>
-      )}
-      {recommended.length === 0 ? (
-        <div style={{ display: "none" }}></div>
-      ) : (
-        <div>
-          <CardRow data={recommended} heading={`Recommended `} />
         </div>
       )}
       <div className="bg-zinc-950 h-1"></div>

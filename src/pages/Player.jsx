@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import useFetchDetail from "../hooks/useFetchDetail";
 import { PiDotOutlineFill } from "react-icons/pi";
 import moment from "moment";
@@ -9,9 +9,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchRecommendations } from "../store/dataSlice";
 
 const Player = () => {
-  const { explore, id } = useParams();
+  const { explore, id} = useParams();
+  const [searchParams] = useSearchParams();
+  const season = searchParams.get('s');
+  const episode = searchParams.get('e');
   const { data } = useFetchDetail(`/${explore}/${id}`);
-  const movieurl = `https://cinesrc.st/embed/${explore}/${id}`;
+  const movieUrl = `https://cinesrc.st/embed/${explore}/${id}`;
+  const tvUrl = `https://cinesrc.st/embed/${explore}/${id}?s=${season}&e=${episode}`;
   const dispatch = useDispatch();
   const { recommended, similar } = useSelector((state) => state.MoviesAndShows);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -32,7 +36,7 @@ const Player = () => {
         <div className="w-full h-full">
           <iframe
             className="w-full h-[520px] max-lg:h-[350px] max-sm:h-[280px] mx-auto"
-            src={movieurl}
+            src={explore === "movie" ? movieUrl : tvUrl}
             title="Video player"
             allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
