@@ -33,9 +33,9 @@ const Banner = ({ trendingMovie }) => {
     {
       loop: true,
       easing: "ease-out",
-      dragStartThreshold: 1, // removes drag delay
+      dragStartThreshold: 1,
     },
-    [Autoplay]
+    [Autoplay],
   );
 
   if (!trendingMovie || trendingMovie.length === 0) {
@@ -44,28 +44,30 @@ const Banner = ({ trendingMovie }) => {
 
   return (
     <section ref={sliderRef}>
-      <div className="flex min-h-full max-h-[98vh] overflow-hidden">
+      <div className="flex h-[450px] md:h-[560px] lg:h-[700px] xl:h-[750px] max-h-[98vh] overflow-hidden select-none">
         {trendingMovie.map((data, index) => {
           return (
             <div
               key={data.id || index}
               className="keen-slider__slide min-w-full min-h-[450px] lg:min-h-full overflow-hidden relative"
             >
-              <div className="w-full h-full">
+              <div className="absolute inset-0 w-full h-full">
                 {data?.backdrop_path ? (
-                  <img
-                    src={
-                      "https://image.tmdb.org/t/p/w780" + data?.backdrop_path
-                    }
-                    loading={index === 0 ? "eager" : "lazy"}
-                    fetchpriority={index === 0 ? "high" : "auto"}
-                    decoding="async"
-                    onLoad={()=>setIsLoaded(true)}
-                    className={`h-full w-full object-cover transition-opacity ${
-                      isLoaded ? " opacity-100" : " opacity-0"
-                    } `}
-                    alt={data?.title || data?.name || "Movie banner"}
-                  />
+                  <>
+                    <img
+                      src={
+                        "https://image.tmdb.org/t/p/w1280" + data?.backdrop_path
+                      }
+                      loading={index === 0 ? "eager" : "lazy"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      decoding="async"
+                      onLoad={() => setIsLoaded(true)}
+                      className={`h-full w-full object-cover object-[center_0%] transition-opacity ${
+                        isLoaded ? " opacity-100" : " opacity-0"
+                      } `}
+                      alt={data?.title || data?.name || "Movie banner"}
+                    />
+                  </>
                 ) : (
                   <Loading />
                 )}
@@ -85,7 +87,7 @@ const Banner = ({ trendingMovie }) => {
                     <span>|</span>
                     <p>View : {Number(data.popularity).toFixed(0)}</p>
                   </div>
-                  <Link to={"/" + data.media_type + "/" + data.id}  state={data}>
+                  <Link to={"/" + data.media_type + "/" + data.id} state={data}>
                     <button className=" bg-white px-4 py-2 text-black font-bold rounded mt-4 hover:bg-gradient-to-l from-orange-600 to-yellow-300 shadow-md active:scale-75 hover:scale-105 transition-all max-md:px-1 max-md:py-1 ">
                       Play Now
                     </button>
