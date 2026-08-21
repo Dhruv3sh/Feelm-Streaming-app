@@ -16,10 +16,13 @@ const Search = () => {
     () => new URLSearchParams(location.search).get("q")?.trim() || "",
     [location.search]
   );
-  const [searchValue, setSearchValue] = useState(query);
+  const [searchValue, setSearchValue] = useState("");
   const lastQueryRef = useRef(query);
+  const hasTypedRef = useRef(false);
 
   useEffect(() => {
+    if (!hasTypedRef.current) return;
+
     const timer = setTimeout(() => {
       const nextQuery = searchValue.trim();
 
@@ -34,10 +37,6 @@ const Search = () => {
 
     return () => clearTimeout(timer);
   }, [searchValue, query, navigate]);
-
-  useEffect(() => {
-    setSearchValue(query);
-  }, [query]);
 
   useEffect(() => {
     if (!query) {
@@ -124,7 +123,10 @@ const Search = () => {
           type="text"
           placeholder="Search Here....."
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => {
+            hasTypedRef.current = true;
+            setSearchValue(e.target.value);
+          }}
           className="rounded-full w-full px-4 py-1 mb-2 bg-neutral-300 text-black"
         />
       </div>
