@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const location = useLocation();
-  const removeSpace = location?.search?.slice(3)?.split("%20")?.join(" ");
-  const [inputValue, setInputValue] = useState(removeSpace);
+  const [inputValue, setInputValue] = useState("");
   const [navbar, setNavbar] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(false);
+  const hasTypedRef = useRef(false);
   const navigate = useNavigate();
   const { user, profileData } = useSelector((state) => state.auth);
 
@@ -18,20 +18,27 @@ const Header = () => {
   };
 
   const handleInputValue = (e) => {
+    hasTypedRef.current = true;
     setInputValue(e.target.value);
   };
 
   useEffect(() => {
+    if (!hasTypedRef.current) return;
+
     const handler = setTimeout(() => {
-      if (inputValue) {
-        navigate(`/search?q=${inputValue}`);
+      const nextQuery = inputValue.trim();
+
+      if (nextQuery) {
+        navigate(`/search?q=${encodeURIComponent(nextQuery)}`);
+      } else if (location.pathname === "/search") {
+        navigate("/search");
       }
     }, 700); // Adjust debounce delay as needed
 
     return () => {
       clearTimeout(handler);
     };
-  }, [inputValue, navigate]);
+  }, [inputValue, location.pathname, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
