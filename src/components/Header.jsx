@@ -30,7 +30,7 @@ const Header = () => {
 
       if (nextQuery) {
         navigate(`/search?q=${encodeURIComponent(nextQuery)}`);
-      } else if (location.pathname === "/search") {
+      } else {
         navigate("/search");
       }
     }, 700); // Adjust debounce delay as needed
@@ -38,7 +38,14 @@ const Header = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [inputValue, location.pathname, navigate]);
+  }, [inputValue, navigate]);
+
+  useEffect(() => {
+    if (location.pathname !== "/search") {
+      hasTypedRef.current = false;
+      setInputValue("");
+    }
+  }, [location.pathname]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

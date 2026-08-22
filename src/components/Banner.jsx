@@ -59,7 +59,7 @@ const Banner = ({ trendingMovie }) => {
                         "https://image.tmdb.org/t/p/w1280" + data?.backdrop_path
                       }
                       loading={index === 0 ? "eager" : "lazy"}
-                      fetchPriority={index === 0 ? "high" : "auto"}
+                      fetchpriority={index === 0 ? "high" : "auto"}
                       decoding="async"
                       onLoad={() => setIsLoaded(true)}
                       className={`h-full w-full object-cover object-[center_0%] transition-opacity ${
